@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 private enum Constants {
     static let spacing: CGFloat = 16
@@ -12,17 +13,30 @@ private enum Constants {
 }
 
 struct GoalsView: View {
+    @Environment(\.modelContext) private var modelContext
     @State private var showingCreateGoal = false
+    @Query private var goals: [GoalModel]
 
     var body: some View {
-        VStack(spacing: Constants.spacing) {
-            Image(systemName: Constants.Image.target)
-                .font(Constants.font)
-            Text(Constants.emptyStateText)
-                .foregroundStyle(.secondary)
+        VStack {
+            if goals.isEmpty {
+                VStack(spacing: Constants.spacing) {
+                    Image(systemName: Constants.Image.target)
+                        .font(Constants.font)
+                    Text(Constants.emptyStateText)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.systemBackground))
+            } else {
+                List {
+                    ForEach(goals, id: \.self) { goal in
+                        Text(goal.name)
+                    }
+                }
+                .listStyle(.insetGrouped)
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {

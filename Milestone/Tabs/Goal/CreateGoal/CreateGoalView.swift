@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 private enum Constants {
     static let navigationTitle = "New Goal"
@@ -11,6 +12,8 @@ private enum Constants {
     static let deleteStepAccessibilityPrefix = "Delete Step "
     static let cancel = "Cancel"
     static let save = "Save"
+    static let step = "Step"
+    static let toDoDate = "To Do Date"
     
     enum Image {
         static let trash = "trash"
@@ -19,8 +22,9 @@ private enum Constants {
 
 struct CreateGoalView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     @State private var title: String = ""
-    @State private var steps: [String] = []
+    @State private var steps: [StepModel] = []
 
     var body: some View {
         NavigationStack {
@@ -33,23 +37,26 @@ struct CreateGoalView: View {
                         Text(Constants.emptyStepsText).foregroundStyle(.secondary)
                     } else {
                         ForEach(steps.indices, id: \.self) { index in
-                            HStack {
-                                TextField("Step \(index + 1)", text: Binding(
-                                    get: { steps[index] },
-                                    set: { steps[index] = $0 }
-                                ))
-                                Button(role: .destructive) {
-                                    steps.remove(at: index)
-                                } label: {
-                                    Image(systemName: Constants.Image.trash)
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    TextField("\(Constants.step) \(index + 1)", text: Binding(
+                                        get: { steps[index].title },
+                                        set: { steps[index].title = $0 }
+                                    ))
+                                    Button(role: .destructive) {
+                                        steps.remove(at: index)
+                                    } label: {
+                                        Image(systemName: Constants.Image.trash)
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .accessibilityLabel(Constants.deleteStepAccessibilityPrefix + String(index + 1))
                                 }
-                                .buttonStyle(.borderless)
-                                .accessibilityLabel(Constants.deleteStepAccessibilityPrefix + String(index + 1))
                             }
+                            .padding(.vertical, 4)
                         }
                     }
                     Button {
-                        steps.append("")
+                        steps.append(StepModel(id: UUID(), title: "", isCompleted: false, date: Date()))
                     } label: {
                         Label(Constants.addStepLabel, systemImage: Constants.addStepSystemImage)
                     }
@@ -62,16 +69,21 @@ struct CreateGoalView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Constants.save) {
-                        // TODO: Handle save action
+                        saveGoal()
                         dismiss()
                     }
                     .disabled(
                         title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-                        steps.first(where: { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) == nil
+                        steps.first(where: { !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) == nil
                     )
                 }
             }
         }
+    }
+    
+    private func saveGoal() {
+        let goal = GoalModel(id: UUID(), name: title, steps: steps)
+        modelContext.insert(goal)
     }
 }
 

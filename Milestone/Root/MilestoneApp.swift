@@ -15,5 +15,6 @@ struct MilestoneApp: App {
         WindowGroup {
             RootTabView()
         }
+        .modelContainer(for: GoalModel.self)
     }
 }

@@ -1,0 +1,22 @@
+//
+//  GoalModel.swift
+//  Milestone
+//
+//  Created by Vasyl Fuchenko on 20.01.2026.
+//
+
+import Foundation
+import SwiftData
+
+@Model
+final class GoalModel: Identifiable {
+    var id: UUID
+    var name: String
+    var steps: [StepModel]
+    
+    init(id: UUID, name: String, steps: [StepModel]) {
+        self.id = id
+        self.name = name
+        self.steps = steps
+    }
+}

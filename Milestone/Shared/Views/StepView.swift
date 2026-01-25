@@ -19,7 +19,7 @@ struct StepView: View {
         HStack(spacing: Constants.Layout.hStackSpacing) {
             Image(systemName: step.isCompleted ? Constants.SFSymbols.completed : Constants.SFSymbols.incomplete)
                 .font(.system(size: Constants.Icon.fontSize, weight: Constants.Icon.fontWeight))
-                .foregroundStyle(step.isCompleted ? AnyShapeStyle(.tint) : AnyShapeStyle(Color.secondary.opacity(Constants.Icon.incompleteIconOpacity)))
+                .foregroundStyle(step.isCompleted ? AnyShapeStyle(.mainPurple) : AnyShapeStyle(Color.secondary.opacity(Constants.Icon.incompleteIconOpacity)))
 
             Text(step.title)
                 .font(.system(size: Constants.Title.fontSize, weight: Constants.Title.fontWeight))
@@ -95,7 +95,7 @@ private enum Constants {
     // Layout & spacing
     enum Layout {
         static let hStackSpacing: CGFloat = 5
-        static let verticalPadding: CGFloat = 15
+        static let verticalPadding: CGFloat = 10
         static let spacerMinLength: CGFloat = 8
         static let containerHorizontalPadding: CGFloat = 14
     }

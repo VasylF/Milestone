@@ -27,7 +27,7 @@ struct GradientProgressBar: View {
 
     var body: some View {
         GeometryReader { geo in
-            VStack(spacing: 5) {
+            VStack(spacing: Constants.spacing) {
                 HStack {
                     Text(title)
                         .font(.subheadline)
@@ -57,8 +57,10 @@ struct GradientProgressBar: View {
                             .transition(.opacity)
                     }
                 }
+                .frame(height: Constants.progressBarHeight)
             }
         }
+        .frame(height: Constants.viewHeight)
     }
 }
 
@@ -69,20 +71,19 @@ private enum Constants {
     static let trackOpacity: Double = 0.18
     static let minFillWidth: CGFloat = 12
     static let previewHeight: CGFloat = 40
+    static let progressBarHeight: CGFloat = 12
+    static let spacing: CGFloat = 10
+    static let viewHeight: CGFloat = 35
 }
 
 
 // MARK: - Preview
 #Preview {
-    VStack {
+    VStack(alignment: .center) {
         GradientProgressBar(completedNumberOfSteps: 2, numberOfSteps: 4)
-            .frame(height: Constants.previewHeight)
         GradientProgressBar(completedNumberOfSteps: 0, numberOfSteps: 5)
-            .frame(height: Constants.previewHeight)
         GradientProgressBar(completedNumberOfSteps: 5, numberOfSteps: 5)
-            .frame(height: Constants.previewHeight)
         GradientProgressBar(completedNumberOfSteps: 3, numberOfSteps: 5)
-            .frame(height: Constants.previewHeight)
     }
     .padding(.horizontal, 20)
 }

@@ -23,4 +23,8 @@ final class GoalModel: Identifiable {
     var numberOfCompletedSteps: Int {
         steps.filter(\.isCompleted).count
     }
+    
+    var numberOfSteps: Int {
+        steps.count
+    }
 }

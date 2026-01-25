@@ -1,16 +1,6 @@
 import SwiftUI
 import SwiftData
 
-private enum Constants {
-    static let spacing: CGFloat = 16
-    static let font: Font = .system(size: 48)
-    static let emptyStateText: String = "Your goals will appear here"
-    
-    enum Image {
-        static let target: String = "target"
-        static let plus: String = "plus"
-    }
-}
 
 struct GoalsView: View {
     @Environment(\.modelContext) private var modelContext
@@ -20,21 +10,10 @@ struct GoalsView: View {
     var body: some View {
         VStack {
             if goals.isEmpty {
-                VStack(spacing: Constants.spacing) {
-                    Image(systemName: Constants.Image.target)
-                        .font(Constants.font)
-                    Text(Constants.emptyStateText)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.systemBackground))
+                emptyView
             } else {
-                List {
-                    ForEach(goals, id: \.self) { goal in
-                        Text(goal.name)
-                    }
-                }
-                .listStyle(.insetGrouped)
+                goalsView
+                    .padding(.top, Constants.spacing)
             }
         }
         .toolbar {
@@ -44,15 +23,51 @@ struct GoalsView: View {
                 } label: {
                     Image(systemName: Constants.Image.plus)
                 }
-                .accessibilityLabel("Add Goal")
             }
         }
         .sheet(isPresented: $showingCreateGoal) {
             CreateGoalView()
         }
     }
+    
+    private var emptyView: some View {
+        VStack(spacing: Constants.spacing) {
+            Image(systemName: Constants.Image.target)
+                .font(Constants.font)
+            Text(Constants.emptyStateText)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground))
+    }
+    
+    private var goalsView: some View {
+        ScrollView {
+            LazyVStack(spacing: Constants.spacing) {
+                ForEach(goals, id: \.id) { goal in
+                    GoalView(goalModel: goal)
+                }
+            }
+            .padding(.horizontal, Constants.spacing)
+        }
+    }
 }
 
+
+// MARK: - Constants
+private enum Constants {
+    static let spacing: CGFloat = 15
+    static let font: Font = .system(size: 48)
+    static let emptyStateText: String = "Your goals will appear here"
+    
+    enum Image {
+        static let target: String = "target"
+        static let plus: String = "plus"
+    }
+}
+
+
+// MARK: - Preview
 #Preview {
     NavigationStack { GoalsView() }
 }

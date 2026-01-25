@@ -110,7 +110,7 @@ private enum Constants {
     // Title text
     enum Title {
         static let fontSize: CGFloat = 17
-        static let fontWeight: Font.Weight = .semibold
+        static let fontWeight: Font.Weight = .regular
     }
 
     // Date pill (calendar + date text)

@@ -10,16 +10,19 @@ import SwiftUI
 
 struct StepView: View {
     let step: StepModel
-    var onChangeDate: (Date) -> Void = { _ in }
 
     @State private var isShowingDatePicker = false
     @State private var selectedDate: Date = Date()
 
     var body: some View {
         HStack(spacing: Constants.Layout.hStackSpacing) {
-            Image(systemName: step.isCompleted ? Constants.SFSymbols.completed : Constants.SFSymbols.incomplete)
-                .font(.system(size: Constants.Icon.fontSize, weight: Constants.Icon.fontWeight))
-                .foregroundStyle(step.isCompleted ? AnyShapeStyle(.mainPurple) : AnyShapeStyle(Color.secondary.opacity(Constants.Icon.incompleteIconOpacity)))
+            Button {
+                step.isCompleted.toggle()
+            } label: {
+                Image(systemName: step.isCompleted ? Constants.SFSymbols.completed : Constants.SFSymbols.incomplete)
+                    .font(.system(size: Constants.Icon.fontSize, weight: Constants.Icon.fontWeight))
+                    .foregroundStyle(step.isCompleted ? AnyShapeStyle(.mainPurple) : AnyShapeStyle(Color.secondary.opacity(Constants.Icon.incompleteIconOpacity)))
+            }
 
             Text(step.title)
                 .font(.system(size: Constants.Title.fontSize, weight: Constants.Title.fontWeight))
@@ -62,7 +65,7 @@ struct StepView: View {
                         Button(Constants.Strings.done) {
                             isShowingDatePicker = false
                             if selectedDate != step.date {
-                                onChangeDate(selectedDate)
+                                step.date = selectedDate
                             }
                         }
                         .buttonStyle(.borderedProminent)
@@ -156,18 +159,10 @@ private enum Constants {
 #Preview {
     ScrollView {
         VStack(alignment: .leading, spacing: 12) {
-            StepView(step: .init(id: UUID(), title: "User testing", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!)) { newDate in
-                // Preview: no-op
-            }
-            StepView(step: .init(id: UUID(), title: "Design review", isCompleted: true, date: Date())) { newDate in
-                // Preview: no-op
-            }
-            StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 3, to: Date())!)) { newDate in
-                // Preview: no-op
-            }
-            StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: -3, to: Date())!)) { newDate in
-                // Preview: no-op
-            }
+            StepView(step: .init(id: UUID(), title: "User testing", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!))
+            StepView(step: .init(id: UUID(), title: "Design review", isCompleted: true, date: Date()))
+            StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 3, to: Date())!))
+            StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: -3, to: Date())!))
         }
         .padding(16)
     }

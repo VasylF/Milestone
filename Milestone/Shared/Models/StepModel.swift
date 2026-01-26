@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 @Model
-class StepModel {
+final class StepModel {
     var id: UUID
     var title: String
     var isCompleted: Bool

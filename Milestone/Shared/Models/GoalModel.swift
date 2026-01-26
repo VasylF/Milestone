@@ -12,7 +12,7 @@ import SwiftData
 final class GoalModel: Identifiable {
     var id: UUID
     var name: String
-    var steps: [StepModel]
+    @Relationship(deleteRule: .cascade) var steps: [StepModel]
     
     init(id: UUID, name: String, steps: [StepModel]) {
         self.id = id

@@ -69,5 +69,8 @@ private enum Constants {
 
 // MARK: - Preview
 #Preview {
-    NavigationStack { GoalsView() }
+    NavigationStack {
+        GoalsView()
+            .modelContainer(GoalContainerMock.previewContainer)
+    }
 }

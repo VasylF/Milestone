@@ -42,20 +42,16 @@ struct GradientProgressBar: View {
                 ZStack(alignment: .leading) {
                     Capsule()
                         .fill(.gray.opacity(Constants.trackOpacity))
-                    
-                    if completedNumberOfSteps > 0 {
-                        Capsule()
-                            .fill(
-                                LinearGradient(
-                                    colors: [.blue, .purple, .pink],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [.blue, .purple, .pink],
+                                startPoint: .leading,
+                                endPoint: .trailing
                             )
-                            .frame(width: max(Constants.minFillWidth, width * clamped)) // keeps a nice rounded “pill” at low progress
-                            .animation(.easeInOut(duration: Constants.animationDuration), value: clamped)
-                            .transition(.opacity)
-                    }
+                        )
+                        .frame(width: completedNumberOfSteps > 0 ? max(Constants.minFillWidth, width * clamped) : 0) // keeps a nice rounded “pill” at low progress
+                        .animation(.easeInOut(duration: Constants.animationDuration), value: clamped)
                 }
                 .frame(height: Constants.progressBarHeight)
             }

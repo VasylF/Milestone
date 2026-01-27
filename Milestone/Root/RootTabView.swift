@@ -9,16 +9,14 @@ struct RootTabView: View {
             }
             .tabItem {
                 Image(systemName: "target")
-                Text("Goals")
             }
 
             NavigationStack {
                 TodaysStepsView()
-                    .navigationTitle("Today")
+                    .navigationTitle("To Do List")
             }
             .tabItem {
                 Image(systemName: "figure.walk")
-                Text("Today")
             }
 
             NavigationStack {
@@ -27,7 +25,6 @@ struct RootTabView: View {
             }
             .tabItem {
                 Image(systemName: "gearshape")
-                Text("Settings")
             }
         }
     }

@@ -1,3 +1,10 @@
+//
+//  GradientProgressBar.swift
+//  Milestone
+//
+//  Created by Vasyl Fuchenko on 23.01.2026.
+//
+
 import SwiftUI
 import SwiftData
 

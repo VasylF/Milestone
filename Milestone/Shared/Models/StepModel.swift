@@ -14,6 +14,7 @@ final class StepModel {
     var title: String
     var isCompleted: Bool
     var date: Date
+    var createdAt: Date = Date()
     
     init(id: UUID, title: String, isCompleted: Bool, date: Date) {
         self.id = id

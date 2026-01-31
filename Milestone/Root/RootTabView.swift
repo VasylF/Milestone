@@ -1,35 +1,83 @@
+//
+//  AssetImage.swift
+//  Milestone
+//
+//  Created by Vasyl Fuchenko on 31.01.2026.
+//
+
 import SwiftUI
 
 struct RootTabView: View {
+    @State private var selection: Tab = .goals
+
     var body: some View {
-        TabView {
-            NavigationStack {
-                GoalsView()
-                    .navigationTitle("Goals")
-            }
-            .tabItem {
-                Image(systemName: "target")
-            }
+        TabView(selection: $selection) {
+            goalsTab()
+            stepsTab()
+            settingsTab()
+        }
+        .toolbarColorScheme(.dark, for: .tabBar)
+    }
+    
+    // MARK: - Tabs
+    private func goalsTab() -> some View {
+        let tab = Tab.goals
+        return NavigationStack {
+            GoalsView()
+                .navigationTitle(tab.name)
+        }
+        .tabItem {
+            Image(selection == tab ? .goalSelected : .goal)
+        }
+        .tag(tab)
+    }
 
-            NavigationStack {
-                TodaysStepsView()
-                    .navigationTitle("To Do List")
-            }
-            .tabItem {
-                Image(systemName: "figure.walk")
-            }
+    private func stepsTab() -> some View {
+        let tab = Tab.steps
+        return NavigationStack {
+            TodaysStepsView()
+                .navigationTitle(tab.name)
+        }
+        .tabItem {
+            Image(selection == tab ? .stepSelected : .step)
+        }
+        .tag(tab)
+    }
 
-            NavigationStack {
-                SettingsView()
-                    .navigationTitle("Settings")
-            }
-            .tabItem {
-                Image(systemName: "gearshape")
-            }
+    private func settingsTab() -> some View {
+        let tab = Tab.settings
+        return NavigationStack {
+            SettingsView()
+                .navigationTitle(tab.name)
+        }
+        .tabItem {
+            Image(selection == tab ? .settingsSelected : .settings)
+        }
+        .tag(tab)
+    }
+}
+
+// MARK: - Tab
+private extension RootTabView {
+    enum Tab: String, Hashable {
+        case goals
+        case steps
+        case settings
+        
+        var name: String {
+            self.rawValue.capitalized
         }
     }
 }
 
+// MARK: - String Constants
+private extension RootTabView {
+    enum Constants {
+        static let tapSpacing: CGFloat = 4
+    }
+}
+
+// MARK: - Preview
 #Preview {
     RootTabView()
 }

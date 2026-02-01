@@ -9,4 +9,6 @@ import SwiftUI
 
 enum Size: CGFloat {
     case xSmall = 11
+    case lMedium = 12
+    case medium = 15
 }

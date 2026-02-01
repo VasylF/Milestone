@@ -60,7 +60,6 @@ struct GoalView: View {
             }
             .foregroundStyle(Color.mainPurple)
         }
-
     }
     
     private var stepsList: some View {

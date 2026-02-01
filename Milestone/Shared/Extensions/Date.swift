@@ -9,16 +9,33 @@ import Foundation
 
 
 extension Date {
+    private var currentCalendar: Calendar {
+        Calendar.current
+    }
+    
     func toRelativeDate() -> String {
-        let calendar = Calendar.current
-        if calendar.isDateInToday(self) { return "Today" }
-        if calendar.isDateInTomorrow(self) { return "Tomorrow" }
+        if currentCalendar.isDateInToday(self) { return "Today" }
+        if currentCalendar.isDateInTomorrow(self) { return "Tomorrow" }
+        if currentCalendar.isDateInYesterday(self) { return "Yesterday" }
         
         let formatter = DateFormatter()
         formatter.doesRelativeDateFormatting = true
         formatter.timeStyle = .none
         formatter.setLocalizedDateFormatFromTemplate("MMMd")
         return formatter.string(from: self)
+    }
+    
+    var isToday: Bool {
+        currentCalendar.isDateInToday(self)
+    }
+    
+    var isOverdueByDay: Bool {
+        self < currentCalendar.startOfDay(for: Date())
+    }
+    
+    var isUpcomingByDay: Bool {
+        // Upcoming if today or in the future (by day semantics)
+        !currentCalendar.isDate(self, inSameDayAs: currentCalendar.startOfDay(for: Date())) && self >= currentCalendar.startOfDay(for: Date()) || currentCalendar.isDateInToday(self)
     }
     
     func conver(to format: Date.Style, locale: Locale = .current) -> String {

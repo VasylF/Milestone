@@ -7,164 +7,193 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
+
+private typealias C = Constants
 
 struct StepView: View {
     let step: StepModel
 
     @State private var isShowingDatePicker = false
     @State private var selectedDate: Date = Date()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        HStack(spacing: Constants.Layout.hStackSpacing) {
-            Button {
-                step.isCompleted.toggle()
-            } label: {
-                Image(systemName: step.isCompleted ? Constants.SFSymbols.completed : Constants.SFSymbols.incomplete)
-                    .font(.system(size: Constants.Icon.fontSize, weight: Constants.Icon.fontWeight))
-                    .foregroundStyle(step.isCompleted ? AnyShapeStyle(.mainPurple) : AnyShapeStyle(Color.secondary.opacity(Constants.Icon.incompleteIconOpacity)))
-            }
-
-            Text(step.title)
-                .font(.system(size: Constants.Title.fontSize, weight: Constants.Title.fontWeight))
-                .strikethrough(step.isCompleted)
-                .foregroundStyle(step.isCompleted ? .secondary : .primary)
-                .truncationMode(.tail)
-
-            Spacer(minLength: Constants.Layout.spacerMinLength)
-
-            let isOverdue = step.date < Calendar.current.startOfDay(for: Date()) && !step.isCompleted
-
-            HStack(spacing: Constants.DatePill.spacing) {
-                Image(systemName: Constants.SFSymbols.calendar)
-                    .font(.system(size: Constants.DatePill.FontSpec.size, weight: Constants.DatePill.FontSpec.weight))
-                Text(step.date.toRelativeDate())
-                    .font(.system(size: Constants.DatePill.FontSpec.size, weight: Constants.DatePill.FontSpec.weight))
-            }
-            .padding(.horizontal, Constants.DatePill.horizontalPadding)
-            .padding(.vertical, Constants.DatePill.verticalPadding)
-            .background(
-                Capsule(style: .continuous)
-                    .fill((isOverdue ? AnyShapeStyle(Color.red.opacity(Constants.DatePill.tintOpacity)) : AnyShapeStyle(.tint.opacity(Constants.DatePill.tintOpacity))))
-            )
-            .foregroundStyle(isOverdue ? AnyShapeStyle(Color.red) : AnyShapeStyle(.tint))
-            .onTapGesture {
-                selectedDate = step.date
-                isShowingDatePicker = true
-            }
-            .popover(isPresented: $isShowingDatePicker, arrowEdge: .top) {
-                VStack(alignment: .leading, spacing: 12) {
-                    DatePicker(
-                        Constants.Strings.dueDate,
-                        selection: $selectedDate,
-                        displayedComponents: [.date]
-                    )
-                    .datePickerStyle(.graphical)
-
-                    HStack {
-                        Spacer()
-                        Button(Constants.Strings.done) {
-                            isShowingDatePicker = false
-                            if selectedDate != step.date {
-                                step.date = selectedDate
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
-                }
-                .padding()
-                .presentationDetents([.medium])
-            }
+        HStack(alignment: .top, spacing: C.spacing) {
+            statusButton
+            detailesView
+            moreButton
         }
-        .padding(.horizontal, Constants.Layout.containerHorizontalPadding)
-        .padding(.vertical, Constants.Layout.verticalPadding)
+        .padding(C.Container.padding)
         .background(
-            RoundedRectangle(cornerRadius: Constants.Container.cornerRadius, style: .continuous)
-                .fill(Color(.secondarySystemBackground))
+            RoundedRectangle(cornerRadius: C.Container.cornerRadius, style: .continuous)
+                .fill(.white)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: Constants.Container.cornerRadius, style: .continuous)
-                .stroke(Color.primary.opacity(Constants.Container.borderOpacity), lineWidth: Constants.Container.borderLineWidth)
+            RoundedRectangle(cornerRadius: C.Container.cornerRadius, style: .continuous)
+                .stroke(Color.softGray, lineWidth: C.Container.borderLineWidth)
         )
-        .shadow(color: Color.black.opacity(Constants.Container.shadowOpacity), radius: Constants.Container.shadowRadius, x: Constants.Container.shadowOffsetX, y: Constants.Container.shadowOffsetY)
+        .shadow(color: Color.mainGray.opacity(C.Container.shadowOpacity),
+                radius: Constants.Container.cornerRadius,
+                x: C.Container.shadowOffsetX,
+                y: C.Container.shadowOffsetY)
         .onAppear {
-            selectedDate = step.date
+            selectedDate = step.date ?? Date()
+        }
+    }
+    
+    private var statusButton: some View {
+        Button {
+            step.isCompleted.toggle()
+        } label: {
+            Image(step.isCompleted ? .checkmarkDone : .checkmarkUndone)
+        }
+        .frame(size: C.StateButton.size)
+    }
+    
+    private var detailesView: some View {
+        VStack(alignment: .leading, spacing: C.DetailsView.spacing) {
+            Text(step.title)
+                .font(.inter(.medium, size: .medium))
+                .foregroundStyle(.darkBlue)
+                .padding(.bottom, C.DetailsView.titleBottomPaddign)
+            stepSubtitle
+            dateView
+        }
+    }
+    
+    private var stepSubtitle: some View {
+        HStack(spacing: C.StepSubtitle.spacing) {
+            Image(.folder)
+                .frame(size: C.StepSubtitle.imageSize)
+            Text(step.goalName ?? Strings.noGoal)
+                .font(.inter(step.hasGoal ? .regular : .italic, size: .lMedium))
+                
+        }
+        .foregroundStyle(step.hasGoal ? .mainGray : .mediumGray)
+    }
+    
+    private var dateView: some View {
+        DateView(state: step.convertToState()) {
+            selectedDate = step.date ?? Date()
+            isShowingDatePicker = true
+        }
+        .disabled(step.isCompleted)
+        .popover(isPresented: $isShowingDatePicker, arrowEdge: .top) {
+            VStack(alignment: .leading, spacing: C.DatePicker.spacing) {
+                DatePicker(
+                    Strings.dueDate,
+                    selection: $selectedDate,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.graphical)
+
+                HStack {
+                    Spacer()
+                    Button(Strings.done) {
+                        isShowingDatePicker = false
+                        if selectedDate != step.date {
+                            step.date = selectedDate
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+            .padding()
+            .presentationDetents([.medium])
+        }
+    }
+    
+    private var moreButton: some View {
+        Menu {
+            Button(Strings.edit, action: {
+                // todo: show edit step screen
+            })
+            Button(Strings.delete,
+                   role: .destructive,
+                   action: {
+                modelContext.delete(step)
+            })
+        } label: {
+            Image(.more)
+        }
+        .frame(size: C.More.size)
+    }
+}
+
+// MARK: - StepModel Extension
+private extension StepModel {
+    func convertToState() -> DateViewState {
+        guard let date else {
+            return .noDate
+        }
+        
+        if date.isToday {
+            return .today
+        } else if date.isOverdueByDay {
+            return .overdue
+        } else {
+            return .date(date)
         }
     }
 }
 
+// MARK: - Strings
+private enum Strings {
+    static let done = "Done"
+    static let dueDate = "Due Date"
+    static let noGoal = "No goal"
+    static let edit = "Edit"
+    static let delete = "Delete"
+}
 
 // MARK: - Constants
 private enum Constants {
-    // Layout & spacing
-    enum Layout {
-        static let hStackSpacing: CGFloat = 5
-        static let verticalPadding: CGFloat = 10
-        static let spacerMinLength: CGFloat = 8
-        static let containerHorizontalPadding: CGFloat = 14
-    }
-
-    // Leading status icon
-    enum Icon {
-        static let fontSize: CGFloat = 18
-        static let fontWeight: Font.Weight = .semibold
-        static let incompleteIconOpacity: Double = 0.6
-    }
-
-    // Title text
-    enum Title {
-        static let fontSize: CGFloat = 17
-        static let fontWeight: Font.Weight = .regular
-    }
-
-    // Date pill (calendar + date text)
-    enum DatePill {
-        static let spacing: CGFloat = 6
-        static let horizontalPadding: CGFloat = 10
-        static let verticalPadding: CGFloat = 6
-        static let tintOpacity: Double = 0.12
-
-        enum FontSpec {
-            static let size: CGFloat = 13
-            static let weight: Font.Weight = .semibold
-        }
-    }
-
-    // Container background, border, and shadow
+    static let spacing: CGFloat = 12
+    
     enum Container {
-        static let cornerRadius: CGFloat = 16
-        static let borderOpacity: Double = 0.06
+        static let cornerRadius: CGFloat = 12
+        static let padding: CGFloat = 17
         static let borderLineWidth: CGFloat = 1
-        static let shadowOpacity: Double = 0.04
-        static let shadowRadius: CGFloat = 8
+        static let shadowOpacity: CGFloat = 0.4
         static let shadowOffsetX: CGFloat = 0
         static let shadowOffsetY: CGFloat = 2
     }
-
-    // System image names
-    enum SFSymbols {
-        static let completed = "checkmark.circle.fill"
-        static let incomplete = "circle"
-        static let calendar = "calendar"
+    
+    enum More {
+        static let size: CGFloat = 32
     }
-
-    // User-facing strings
-    enum Strings {
-        static let dueDate = "Due Date"
-        static let done = "Done"
+    
+    enum DatePicker {
+        static let spacing: CGFloat = 12
+    }
+    
+    enum StateButton {
+        static let size: CGFloat = 20
+    }
+    
+    enum DetailsView {
+        static let spacing: CGFloat = 10
+        static let titleBottomPaddign: CGFloat = 4
+    }
+    
+    enum StepSubtitle {
+        static let spacing: CGFloat = 6
+        static let imageSize: CGFloat = 12
     }
 }
-
 
 // MARK: - Preview
 #Preview {
     ScrollView {
-        VStack(alignment: .leading, spacing: 12) {
-            StepView(step: .init(id: UUID(), title: "User testing", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!))
+        VStack(alignment: .leading, spacing: 20) {
+            StepView(step: .init(id: UUID(), title: "User testing", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!, goalName: "T4 Grade"))
             StepView(step: .init(id: UUID(), title: "Design review", isCompleted: true, date: Date()))
             StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 3, to: Date())!))
             StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: -3, to: Date())!))
         }
         .padding(16)
     }
+    .background(.darkBlue.opacity(0.05))
 }
 

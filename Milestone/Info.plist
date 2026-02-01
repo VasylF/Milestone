@@ -5,6 +5,9 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Inter-SemiBold.otf</string>
+		<string>Inter-Italic.otf</string>
+		<string>Inter-Medium.otf</string>
+		<string>Inter-Regular.otf</string>
 	</array>
 </dict>
 </plist>

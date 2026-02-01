@@ -7,7 +7,10 @@
 
 enum CustomFont {
     enum Inter: String {
-        case semiBold = "Inter-SemiBold"// Inter-SemiBold.otf
+        case semiBold = "Inter-SemiBold"
+        case medium = "Inter-Medium"
+        case regular = "Inter-Regular"
+        case italic = "Inter-Italic"
     }
 }
 

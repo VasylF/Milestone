@@ -10,8 +10,6 @@ import SwiftData
 
 
 struct StepsView: View {
-    @Environment(\.modelContext) private var modelContext
-    @State private var showingCreateGoal = false
     @Query(
         sort: [
             SortDescriptor(\StepModel.createdAt, order: .reverse)
@@ -28,7 +26,13 @@ struct StepsView: View {
     }
         
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            ScreenHeaderView(
+                screenName: Strings.title,
+                subtitle: "12 of 34 steps",
+                rightView: AnyView(addButton)
+            )
+            
             // Main content
             if stepModels.isEmpty {
                 emptyView
@@ -52,7 +56,6 @@ struct StepsView: View {
                 }
             }
         }
-        .padding(.top, Constants.defaultNavBarHeight)
     }
     
     private func sectionHeader(for day: Date) -> some View {
@@ -83,8 +86,14 @@ struct StepsView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.top, Constants.defaultNavBarHeight)
         .background(Color(.systemBackground))
+    }
+    
+    private var addButton: some View {
+        Button {
+        } label: {
+            Image(.add)
+        }
     }
 }
 
@@ -96,7 +105,6 @@ private enum Strings {
 // MARK: - Constants
 private enum Constants {
     static let spacing: CGFloat = 15
-    static let defaultNavBarHeight: CGFloat = 200
 }
 
 // MARK: - Preview

@@ -24,7 +24,6 @@ struct RootTabView: View {
         let tab = Tab.goals
         return NavigationStack {
             GoalsView()
-                .navigationTitle(tab.name)
         }
         .tabItem {
             Image(selection == tab ? .goalSelected : .goal)
@@ -36,7 +35,6 @@ struct RootTabView: View {
         let tab = Tab.steps
         return NavigationStack {
             StepsView()
-                .navigationTitle(tab.name)
         }
         .tabItem {
             Image(selection == tab ? .stepSelected : .step)
@@ -48,7 +46,6 @@ struct RootTabView: View {
         let tab = Tab.settings
         return NavigationStack {
             SettingsView()
-                .navigationTitle(tab.name)
         }
         .tabItem {
             Image(selection == tab ? .settingsSelected : .settings)
@@ -63,10 +60,6 @@ private extension RootTabView {
         case goals
         case steps
         case settings
-        
-        var name: String {
-            self.rawValue.capitalized
-        }
     }
 }
 

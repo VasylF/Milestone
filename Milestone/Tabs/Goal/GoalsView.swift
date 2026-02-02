@@ -15,21 +15,16 @@ struct GoalsView: View {
     @Query private var goals: [GoalModel]
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            ScreenHeaderView(
+                screenName: Strings.title,
+                subtitle: "\(3)\(Strings.subtitle)",
+                rightView: AnyView(addButton)
+            )
             if goals.isEmpty {
                 emptyView
             } else {
                 goalsView
-                    .padding(.top, Constants.spacing)
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showingCreateGoal = true
-                } label: {
-                    Image(systemName: Constants.Image.plus)
-                }
             }
         }
         .sheet(isPresented: $showingCreateGoal) {
@@ -58,6 +53,14 @@ struct GoalsView: View {
             .padding(.horizontal, Constants.spacing)
         }
     }
+    
+    private var addButton: some View {
+        Button {
+            showingCreateGoal = true
+        } label: {
+            Image(.add)
+        }
+    }
 }
 
 
@@ -73,6 +76,11 @@ private enum Constants {
     }
 }
 
+// MARK: - Constants
+private enum Strings {
+    static let title: String = "Goals"
+    static let subtitle: String = " active goals"
+}
 
 // MARK: - Preview
 #Preview {

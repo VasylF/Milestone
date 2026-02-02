@@ -2,7 +2,11 @@ import SwiftUI
 
 struct SettingsView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            ScreenHeaderView(
+                screenName: Strings.title,
+                subtitle: Strings.subtitle
+            )
             Form {
                 Section("General") {
                     Toggle("Enable Notifications", isOn: .constant(true))
@@ -28,6 +32,11 @@ struct SettingsView: View {
     }
 }
 
+// MARK: - Constants
+private enum Strings {
+    static let title: String = "Settings"
+    static let subtitle: String = "Manage your preferences"
+}
 
 // MARK: - Preview
 #Preview {

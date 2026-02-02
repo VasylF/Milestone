@@ -35,7 +35,7 @@ struct RootTabView: View {
     private func stepsTab() -> some View {
         let tab = Tab.steps
         return NavigationStack {
-            TodaysStepsView()
+            StepsView()
                 .navigationTitle(tab.name)
         }
         .tabItem {

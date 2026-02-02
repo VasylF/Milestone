@@ -1,5 +1,5 @@
 //
-//  GradientProgressBar.swift
+//  StepsView.swift
 //  Milestone
 //
 //  Created by Vasyl Fuchenko on 27.01.2026.
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 
-struct TodaysStepsView: View {
+struct StepsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var showingCreateGoal = false
     @Query(
@@ -21,17 +21,20 @@ struct TodaysStepsView: View {
     
     private var grouped: [(day: Date, items: [StepModel])] {
         let cal = Calendar.current
-        let dict = Dictionary(grouping: stepModels) { cal.startOfDay(for: $0.date) }
+        let dict = Dictionary(grouping: stepModels) { cal.startOfDay(for: $0.date!) }
         return dict
-            .map { ($0.key, $0.value.sorted { $0.date < $1.date }) }
+            .map { ($0.key, $0.value.sorted { $0.date! < $1.date! }) }
             .sorted { $0.day < $1.day }
     }
-    
+        
     var body: some View {
-        if stepModels.isEmpty {
-            emptyView
-        } else {
-            stepsView
+        VStack {
+            // Main content
+            if stepModels.isEmpty {
+                emptyView
+            } else {
+                stepsView
+            }
         }
     }
     
@@ -49,6 +52,7 @@ struct TodaysStepsView: View {
                 }
             }
         }
+        .padding(.top, Constants.defaultNavBarHeight)
     }
     
     private func sectionHeader(for day: Date) -> some View {
@@ -60,7 +64,7 @@ struct TodaysStepsView: View {
             .padding(.top, 14)
             .padding(.bottom, 6)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background) // important for pinned headers
+            .background(.clear)
     }
 
     private func dayHeaderTitle(for day: Date) -> String {
@@ -79,21 +83,26 @@ struct TodaysStepsView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.top, Constants.defaultNavBarHeight)
         .background(Color(.systemBackground))
     }
 }
 
+// MARK: - Constants
+private enum Strings {
+    static let title: String = "Steps"
+}
 
 // MARK: - Constants
 private enum Constants {
     static let spacing: CGFloat = 15
+    static let defaultNavBarHeight: CGFloat = 200
 }
-
 
 // MARK: - Preview
 #Preview {
     NavigationStack {
-        TodaysStepsView()
+        StepsView()
             .modelContainer(GoalContainerMock.previewContainer)
     }
 }

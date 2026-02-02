@@ -52,7 +52,8 @@ struct StepView: View {
     }
     
     private var detailesView: some View {
-        VStack(alignment: .leading, spacing: C.DetailsView.spacing) {
+        VStack(alignment: .leading,
+               spacing: C.DetailsView.spacing) {
             Text(step.title)
                 .font(.inter(.medium, size: .medium))
                 .foregroundStyle(.darkBlue)
@@ -60,6 +61,7 @@ struct StepView: View {
             stepSubtitle
             dateView
         }
+               .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     private var stepSubtitle: some View {

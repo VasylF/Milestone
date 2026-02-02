@@ -77,7 +77,7 @@ private enum Constants {
         ScreenHeaderView(
             screenName: "Steps",
             subtitle: "5 of 12 completed",
-            rightView: AnyView(Button(action: {}) { Image(.add) })
+            rightView: AnyView(Button(action: {}) { Image(.madd) })
         )
         .frame(height: 168)
         ScreenHeaderView(

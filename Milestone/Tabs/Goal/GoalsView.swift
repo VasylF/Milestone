@@ -58,7 +58,7 @@ struct GoalsView: View {
         Button {
             showingCreateGoal = true
         } label: {
-            Image(.add)
+            Image(.madd)
         }
     }
 }

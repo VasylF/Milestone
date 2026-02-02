@@ -1,41 +1,40 @@
 import SwiftUI
 
 struct SettingsView: View {
+    private var appVersion: String {
+        let version = Bundle.version ?? ""
+        let build = Bundle.build ?? ""
+        return "\(version) (\(build))"
+    }
     var body: some View {
         VStack(spacing: 0) {
             ScreenHeaderView(
                 screenName: Strings.title,
                 subtitle: Strings.subtitle
             )
-            Form {
-                Section("General") {
-                    Toggle("Enable Notifications", isOn: .constant(true))
-                    Toggle("Use Metric Units", isOn: .constant(true))
-                }
+            VStack(alignment: .leading) {
+                SettingRowHeader(text: Strings.about)
+                SettingRow(icon: .minof, title: Strings.version, value: appVersion)
+                Spacer()
             }
+            .padding(.horizontal, GlobalConstants.hPadding)
+            .padding(.top, Constants.topPadding)
         }
-        .safeAreaInset(edge: .bottom) {
-            appVersionView
-                .frame(maxWidth: .infinity)
-                .background(.clear)
-        }
-    }
-    
-    private var appVersionView: some View {
-        let version = Bundle.version ?? ""
-        let build = Bundle.build ?? ""
-        return Text("Version \(version) (\(build))")
-            .font(.caption)
-            .foregroundColor(.secondary)
-            .multilineTextAlignment(.center)
-            .padding(.bottom, 15)
+        .background(.softGray)
     }
 }
 
-// MARK: - Constants
+// MARK: - Strings
 private enum Strings {
     static let title: String = "Settings"
     static let subtitle: String = "Manage your preferences"
+    static let version: String = "Version"
+    static let about: String = "About"
+}
+
+// MARK: - Constants
+private enum Constants {
+    static let topPadding: CGFloat = 24
 }
 
 // MARK: - Preview

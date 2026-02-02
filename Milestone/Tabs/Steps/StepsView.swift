@@ -92,7 +92,7 @@ struct StepsView: View {
     private var addButton: some View {
         Button {
         } label: {
-            Image(.add)
+            Image(.madd)
         }
     }
 }

@@ -34,6 +34,7 @@ struct GoalsView: View {
         .sheet(isPresented: $showingCreateGoal) {
             CreateGoalView()
         }
+        .background(.softGray)
     }
     
     private var emptyView: some View {

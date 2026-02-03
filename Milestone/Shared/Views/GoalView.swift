@@ -20,22 +20,17 @@ struct GoalView: View {
     }
 
     var body: some View {
-        VStack {
-            VStack {
-                HStack(spacing: Constants.defaultSpacing) {
-                    chevronButton
-                    VStack(spacing: Constants.defaultSpacing) {
-                        headerView
-                        gradientProgressBar
-                    }
-                }
-            }
-            .padding(Constants.defaultSpacing)
+        VStack(spacing: Constants.Container.spacing) {
+            headerView
+            gradientProgressBar
+                .padding(.leading, Constants.Container.progressBarLeadingPading)
             if isGoalsListExtended, goalModel.steps.count > 0 {
                 dividerLine
                 stepsList
             }
         }
+        .padding(.horizontal, GlobalConstants.hPadding)
+        .padding(.vertical, Constants.Container.topPadding)
         .background(
             RoundedRectangle(cornerRadius: 15, style: .continuous)
                 .fill(Color(.systemBackground))
@@ -47,30 +42,11 @@ struct GoalView: View {
         .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.08), radius: 15, x: 0, y: 6)
     }
     
-    private var addSubtaskButton: some View {
-        Button {
-            
-        } label: {
-            HStack(spacing: 10) {
-                Image(systemName: "plus")
-                    .frame(width: 15, height: 15)
-                Text("Add Subtask")
-                    .font(.system(size: Constants.SubtitleButton.fontSize, weight: Constants.SubtitleButton.fontWeight))
-                Spacer()
-            }
-            .foregroundStyle(Color.mainPurple)
-        }
-    }
-    
     private var stepsList: some View {
         VStack(spacing: 7) {
             ForEach(goalModel.steps, id: \.id) { step in
                 StepView(step: step)
             }
-            addSubtaskButton
-                .padding(.horizontal, 12)
-                .padding(.top, 10)
-                .padding(.bottom, 25)
         }
         .animation(.easeInOut(duration: 1), value: isGoalsListExtended)
         .padding(.horizontal, Constants.defaultSpacing)
@@ -89,7 +65,7 @@ struct GoalView: View {
                 isGoalsListExtended.toggle()
             }
         } label: {
-            Image(systemName: Constants.Chevron.imageName)
+            Image(.mchevronRight)
                 .frame(
                     width: Constants.Chevron.size,
                     height: Constants.Chevron.size
@@ -102,37 +78,47 @@ struct GoalView: View {
     }
     
     private var headerView: some View {
-        HStack(alignment: .firstTextBaseline) {
+        HStack {
+            chevronButton
             Text(goalModel.name)
-                .font(.headline)
-                .fontWeight(.bold)
-                .foregroundStyle(.primary)
+                .font(.inter(.bold, size: .xlMedium))
+                .foregroundStyle(.darkBlue)
             Spacer()
             Menu {
-                Button("Edit", action: {})
-                Button("Delete",
+                Button(Strings.edit, action: {})
+                Button(Strings.remove,
                        role: .destructive,
                        action: {
                     modelContext.delete(goalModel)
                 })
             } label: {
-                Image(systemName: "ellipsis")
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(.mainPurple)
-                    .padding(.horizontal, 2)
-                    .contentShape(Rectangle())
+                Image(.more)
             }
         }
     }
     
     private var gradientProgressBar: some View {
-        GradientProgressBar(completedNumberOfSteps: goalModel.numberOfCompletedSteps, numberOfSteps: goalModel.numberOfSteps)
+        GradientProgressBar(
+            completedNumberOfSteps: goalModel.numberOfCompletedSteps,
+            numberOfSteps: goalModel.numberOfSteps
+        )
     }
+}
+
+// MARK: - Strings
+private enum Strings {
+    static let edit: String = "Edit"
+    static let remove: String = "Remove"
 }
 
 // MARK: - Constants
 private enum Constants {
     static let defaultSpacing: CGFloat = 15
+    enum Container {
+        static let spacing: CGFloat = 19
+        static let topPadding: CGFloat = 28
+        static let progressBarLeadingPading: CGFloat = 30
+    }
     
     enum Divider {
         static let height: CGFloat = 1
@@ -148,7 +134,6 @@ private enum Constants {
         static let extendedDegrees: CGFloat = 90
         static let collapsedDegrees: CGFloat = 0
         static let size: CGFloat = 20
-        static let imageName: String = "chevron.right"
         static let animationDuration: TimeInterval = 0.2
     }
 }

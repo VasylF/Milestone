@@ -30,11 +30,11 @@ struct GradientProgressBar: View {
             VStack(spacing: Constants.spacing) {
                 HStack {
                     Text(title)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.inter(.medium, size: .lMedium))
+                        .foregroundStyle(.mainGray)
                     Spacer()
                     Text(progressPercentage)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.inter(.bold, size: .lMedium))
                         .foregroundStyle(.mainPurple)
                 }
                 
@@ -45,7 +45,7 @@ struct GradientProgressBar: View {
                     Capsule()
                         .fill(
                             LinearGradient(
-                                colors: [.blue, .purple, .pink],
+                                colors: [.blue, .purple],
                                 startPoint: .leading,
                                 endPoint: .trailing
                             )
@@ -68,14 +68,14 @@ private enum Constants {
     static let minFillWidth: CGFloat = 12
     static let previewHeight: CGFloat = 40
     static let progressBarHeight: CGFloat = 12
-    static let spacing: CGFloat = 10
+    static let spacing: CGFloat = 13
     static let viewHeight: CGFloat = 35
 }
 
 
 // MARK: - Preview
 #Preview {
-    VStack(alignment: .center) {
+    VStack(alignment: .center, spacing: 40) {
         GradientProgressBar(completedNumberOfSteps: 2, numberOfSteps: 4)
         GradientProgressBar(completedNumberOfSteps: 0, numberOfSteps: 5)
         GradientProgressBar(completedNumberOfSteps: 5, numberOfSteps: 5)

@@ -17,19 +17,52 @@ struct StepsView: View {
     )
     private var stepModels: [StepModel]
     
-    private var grouped: [(day: Date, items: [StepModel])] {
-        let cal = Calendar.current
-        let dict = Dictionary(grouping: stepModels) { cal.startOfDay(for: $0.date!) }
-        return dict
-            .map { ($0.key, $0.value.sorted { $0.date! < $1.date! }) }
-            .sorted { $0.day < $1.day }
+    private var grouped: [(label: StepsRowHeader.HeaderType,
+                           items: [StepModel])] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+
+        var overdue: [StepModel] = []
+        var todayItems: [StepModel] = []
+        var upcoming: [StepModel] = []
+        var noDueDate: [StepModel] = []
+
+        for step in stepModels {
+            guard let date = step.date else {
+                noDueDate.append(step)
+                continue
+            }
+            let stepDay = calendar.startOfDay(for: date)
+            if stepDay < today {
+                overdue.append(step)
+            } else if calendar.isDate(stepDay, inSameDayAs: today) {
+                todayItems.append(step)
+            } else {
+                upcoming.append(step)
+            }
+        }
+
+        // Sort each bucket by their date ascending (nil dates are already in noDueDate)
+        overdue.sort { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+        todayItems.sort { ($0.date ?? .distantPast) < ($1.date ?? .distantPast) }
+        upcoming.sort { ($0.date ?? .distantFuture) < ($1.date ?? .distantFuture) }
+        // For no due date, preserve createdAt recency if available
+        noDueDate.sort { $0.createdAt < $1.createdAt }
+
+        var sections: [(label: StepsRowHeader.HeaderType, items: [StepModel])] = []
+        if !overdue.isEmpty { sections.append((label: .overdue, items: overdue)) }
+        if !todayItems.isEmpty { sections.append((label: .today, items: todayItems)) }
+        if !upcoming.isEmpty { sections.append((label: .upcoming, items: upcoming)) }
+        if !noDueDate.isEmpty { sections.append((label: .noDueDate, items: noDueDate)) }
+
+        return sections
     }
         
     var body: some View {
         VStack(spacing: 0) {
             ScreenHeaderView(
                 screenName: Strings.title,
-                subtitle: "12 of 34 steps",
+                subtitle: subtitle(),
                 rightView: AnyView(addButton)
             )
             
@@ -44,38 +77,26 @@ struct StepsView: View {
     
     private var stepsView: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                ForEach(grouped, id: \.day) { group in
+            LazyVStack(alignment: .leading,
+                       spacing: Constants.spacing) {
+                ForEach(grouped, id: \.label) { group in
                     Section {
                         ForEach(group.items) { stepModel in
                             StepView(step: stepModel)
                         }
                     } header: {
-                        sectionHeader(for: group.day)
+                        StepsRowHeader(numberOfItems: group.items.count,
+                                       type: group.label)
+                        .padding(.leading, Constants.Header.leadingPadding)
+                        .padding(.bottom, Constants.Header.bottomPadding)
+                        .padding(.top, Constants.Header.topPadding)
                     }
                 }
             }
+            .padding(.horizontal, GlobalConstants.hPadding)
+            .safeAreaPadding(.bottom, GlobalConstants.hPadding)
         }
-    }
-    
-    private func sectionHeader(for day: Date) -> some View {
-        let title = dayHeaderTitle(for: day)
-        
-        return Text(title)
-            .font(.headline)
-            .padding(.horizontal, 16)
-            .padding(.top, 14)
-            .padding(.bottom, 6)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.clear)
-    }
-
-    private func dayHeaderTitle(for day: Date) -> String {
-        let cal = Calendar.current
-        if cal.isDateInToday(day) { return "Today" }
-        if cal.isDateInTomorrow(day) { return "Tomorrow" }
-
-        return day.conver(to: .MMMd)
+        .background(.softGray)
     }
     
     private var emptyView: some View {
@@ -95,16 +116,28 @@ struct StepsView: View {
             Image(.madd)
         }
     }
+    
+    private func subtitle() -> String {
+        let numberOfSteps = stepModels.count
+        let completedNumber = stepModels.filter { $0.isCompleted }.count
+        return String(format: Strings.subtitle, completedNumber, numberOfSteps)
+    }
 }
 
 // MARK: - Constants
 private enum Strings {
     static let title: String = "Steps"
+    static let subtitle: String = "%d of %d steps"
 }
 
 // MARK: - Constants
 private enum Constants {
-    static let spacing: CGFloat = 15
+    static let spacing: CGFloat = 9
+    enum Header {
+        static let bottomPadding: CGFloat = 8
+        static let topPadding: CGFloat = 28
+        static let leadingPadding: CGFloat = 8
+    }
 }
 
 // MARK: - Preview

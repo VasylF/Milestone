@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DateView: View {
     var state: DateViewState
+    var isCompleted: Bool
     var onAction: () -> Void
     
     var body: some View {
@@ -50,9 +51,11 @@ struct DateView: View {
     }
     
     private var color: Color {
+        guard isCompleted == false else { return .mediumGray }
+        
         switch state {
             case .overdue:
-                return .mlstnRed
+                return .mRed
             case .today, .date:
                 return .mainPurple
             case .noDate:
@@ -82,9 +85,10 @@ private enum Constants {
 // MARK: - Preview
 #Preview {
     VStack(alignment: .leading, spacing: 10) {
-        DateView(state: .overdue) { }
-        DateView(state: .today) { }
-        DateView(state: .noDate) { }
-        DateView(state: .date(Date())) { }
+        DateView(state: .overdue, isCompleted: true) { }
+        DateView(state: .overdue, isCompleted: false) { }
+        DateView(state: .today, isCompleted: true) { }
+        DateView(state: .noDate, isCompleted: false) { }
+        DateView(state: .date(Date()), isCompleted: false) { }
     }
 }

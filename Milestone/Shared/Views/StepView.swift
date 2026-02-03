@@ -56,7 +56,8 @@ struct StepView: View {
                spacing: C.DetailsView.spacing) {
             Text(step.title)
                 .font(.inter(.medium, size: .medium))
-                .foregroundStyle(.darkBlue)
+                .foregroundStyle(step.isCompleted ? .mediumGray : .darkBlue)
+                .strikethrough(step.isCompleted)
                 .padding(.bottom, C.DetailsView.titleBottomPaddign)
             stepSubtitle
             dateView
@@ -76,7 +77,7 @@ struct StepView: View {
     }
     
     private var dateView: some View {
-        DateView(state: step.convertToState()) {
+        DateView(state: step.convertToState(), isCompleted: step.isCompleted) {
             selectedDate = step.date ?? Date()
             isShowingDatePicker = true
         }

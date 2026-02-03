@@ -13,12 +13,16 @@ struct GoalsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var showingCreateGoal = false
     @Query private var goals: [GoalModel]
+    
+    private var activeGoalCount: Int {
+        goals.filter { !$0.isGoalCompleted }.count
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             ScreenHeaderView(
                 screenName: Strings.title,
-                subtitle: "\(3)\(Strings.subtitle)",
+                subtitle: "\(activeGoalCount)\(Strings.subtitle)",
                 rightView: AnyView(addButton)
             )
             if goals.isEmpty {

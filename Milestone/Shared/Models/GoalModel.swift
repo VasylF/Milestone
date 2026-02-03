@@ -27,4 +27,8 @@ final class GoalModel: Identifiable {
     var numberOfSteps: Int {
         steps.count
     }
+    
+    var isGoalCompleted: Bool {
+        numberOfCompletedSteps == numberOfSteps
+    }
 }

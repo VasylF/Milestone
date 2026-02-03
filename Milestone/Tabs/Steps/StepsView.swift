@@ -100,14 +100,15 @@ struct StepsView: View {
     }
     
     private var emptyView: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Constants.EmptyView.spacing) {
             Image(systemName: "figure.walk")
-                .font(.system(size: 48))
-            Text("Today's steps will appear here")
-                .foregroundStyle(.secondary)
+                .font(.system(size: Constants.EmptyView.size))
+            Text(Strings.emptyText)
+                .font(.inter(.regular, size: .xlMedium))
+                .foregroundStyle(.mainGray)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
+        .background(.softGray)
     }
     
     private var addButton: some View {
@@ -119,8 +120,15 @@ struct StepsView: View {
     
     private func subtitle() -> String {
         let numberOfSteps = stepModels.count
-        let completedNumber = stepModels.filter { $0.isCompleted }.count
-        return String(format: Strings.subtitle, completedNumber, numberOfSteps)
+        
+        guard numberOfSteps > 0 else { return "" }
+        
+        let completedNumber = stepModels.filter(\.isCompleted).count
+        return String(
+            format: Strings.subtitle,
+            completedNumber,
+            numberOfSteps
+        )
     }
 }
 
@@ -128,6 +136,7 @@ struct StepsView: View {
 private enum Strings {
     static let title: String = "Steps"
     static let subtitle: String = "%d of %d steps"
+    static let emptyText: String = "All steps will appear here"
 }
 
 // MARK: - Constants
@@ -137,6 +146,10 @@ private enum Constants {
         static let bottomPadding: CGFloat = 8
         static let topPadding: CGFloat = 28
         static let leadingPadding: CGFloat = 8
+    }
+    enum EmptyView {
+        static let spacing: CGFloat = 12
+        static let size: CGFloat = 48
     }
 }
 

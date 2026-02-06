@@ -43,13 +43,12 @@ struct GoalView: View {
     }
     
     private var stepsList: some View {
-        VStack(spacing: 7) {
+        VStack(spacing: 15) {
             ForEach(goalModel.steps, id: \.id) { step in
-                StepView(step: step)
+                GoalStepView(stepModel: step)
             }
         }
         .animation(.easeInOut(duration: 1), value: isGoalsListExtended)
-        .padding(.horizontal, Constants.defaultSpacing)
         .padding(.top, 8)
     }
     

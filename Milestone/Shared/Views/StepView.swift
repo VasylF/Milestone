@@ -124,23 +124,6 @@ struct StepView: View {
     }
 }
 
-// MARK: - StepModel Extension
-private extension StepModel {
-    func convertToState() -> DateViewState {
-        guard let date else {
-            return .noDate
-        }
-        
-        if date.isToday {
-            return .today
-        } else if date.isOverdueByDay {
-            return .overdue
-        } else {
-            return .date(date)
-        }
-    }
-}
-
 // MARK: - Strings
 private enum Strings {
     static let done = "Done"

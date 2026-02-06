@@ -29,3 +29,18 @@ final class StepModel {
     }
 }
 
+extension StepModel {
+    func convertToState() -> DateViewState {
+        guard let date else {
+            return .noDate
+        }
+        
+        if date.isToday {
+            return .today
+        } else if date.isOverdueByDay {
+            return .overdue
+        } else {
+            return .date(date)
+        }
+    }
+}

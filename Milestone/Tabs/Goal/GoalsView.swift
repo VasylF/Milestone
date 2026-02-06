@@ -41,7 +41,7 @@ struct GoalsView: View {
         VStack(spacing: Constants.spacing) {
             Image(systemName: Constants.Image.target)
                 .font(Constants.font)
-            Text(Constants.emptyStateText)
+            Text(Strings.emptyStateText)
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -55,7 +55,9 @@ struct GoalsView: View {
                     GoalView(goalModel: goal)
                 }
             }
-            .padding(.horizontal, Constants.spacing)
+            .padding(.top, Constants.topPadding)
+            .padding(.horizontal, GlobalConstants.hPadding)
+            .safeAreaPadding(.bottom, GlobalConstants.hPadding)
         }
     }
     
@@ -73,18 +75,18 @@ struct GoalsView: View {
 private enum Constants {
     static let spacing: CGFloat = 15
     static let font: Font = .system(size: 48)
-    static let emptyStateText: String = "Your goals will appear here"
+    static let topPadding: CGFloat = 24
     
     enum Image {
         static let target: String = "target"
-        static let plus: String = "plus"
     }
 }
 
-// MARK: - Constants
+// MARK: - Strings
 private enum Strings {
     static let title: String = "Goals"
     static let subtitle: String = " active goals"
+    static let emptyStateText: String = "Your goals will appear here"
 }
 
 // MARK: - Preview

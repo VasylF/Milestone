@@ -31,15 +31,7 @@ struct GoalView: View {
         }
         .padding(.horizontal, GlobalConstants.hPadding)
         .padding(.vertical, Constants.Container.topPadding)
-        .background(
-            RoundedRectangle(cornerRadius: 15, style: .continuous)
-                .fill(Color(.systemBackground))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(Color.primary.opacity(0.06), lineWidth: 1)
-        )
-        .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.08), radius: 15, x: 0, y: 6)
+        .cardContainerStyle()
     }
     
     private var stepsList: some View {

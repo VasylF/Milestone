@@ -25,18 +25,7 @@ struct StepView: View {
             moreButton
         }
         .padding(C.Container.padding)
-        .background(
-            RoundedRectangle(cornerRadius: C.Container.cornerRadius, style: .continuous)
-                .fill(.white)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: C.Container.cornerRadius, style: .continuous)
-                .stroke(Color.softGray, lineWidth: C.Container.borderLineWidth)
-        )
-        .shadow(color: Color.mainGray.opacity(C.Container.shadowOpacity),
-                radius: Constants.Container.cornerRadius,
-                x: C.Container.shadowOffsetX,
-                y: C.Container.shadowOffsetY)
+        .cardContainerStyle()
         .onAppear {
             selectedDate = step.date ?? Date()
         }
@@ -138,12 +127,7 @@ private enum Constants {
     static let spacing: CGFloat = 12
     
     enum Container {
-        static let cornerRadius: CGFloat = 12
         static let padding: CGFloat = 17
-        static let borderLineWidth: CGFloat = 1
-        static let shadowOpacity: CGFloat = 0.4
-        static let shadowOffsetX: CGFloat = 0
-        static let shadowOffsetY: CGFloat = 2
     }
     
     enum More {

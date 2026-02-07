@@ -21,8 +21,8 @@ struct GradientButton: View {
                 .padding(Constants.padding)
                 .frame(maxWidth: .infinity)
                 .background(GC.defaultGradient)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                .roundedClip()
+                .defaultShadow()
         }
     }
 }

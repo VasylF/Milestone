@@ -26,11 +26,7 @@ struct SettingRow: View {
                 .foregroundStyle(.mainGray)
         }
         .padding(Constants.padding)
-        .background(
-            RoundedRectangle(cornerRadius: Constants.connerRadius, style: .continuous)
-                .fill(.white)
-                .shadow(color: .black.opacity(Constants.Shadow.opacity), radius: Constants.Shadow.radius, x: Constants.Shadow.x, y: Constants.Shadow.y)
-        )
+        .cardContainerStyle()
     }
     
     private var iconView: some View {
@@ -51,16 +47,9 @@ struct SettingRow: View {
 private enum Constants {
     static let spacing: CGFloat = 12
     static let padding: CGFloat = 16
-    static let connerRadius: CGFloat = 16
     enum Icon {
         static let size: CGFloat = 32
         static let cornerRadius: CGFloat = 10
-    }
-    enum Shadow {
-        static let opacity: CGFloat = 0.06
-        static let radius: CGFloat = 8
-        static let x: CGFloat = 0
-        static let y: CGFloat = 2
     }
 }
 

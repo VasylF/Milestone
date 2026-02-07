@@ -28,7 +28,8 @@ struct NewStepView: View {
                 screenName: isEditing ? Strings.editStep : Strings.newStep,
                 rightView: AnyView(closeButton)
             )
-            VStack(alignment: .leading, spacing: 25) {
+            VStack(alignment: .leading,
+                   spacing: Constants.contentSpacing) {
                 stepNameView
                 goalNameView
                 dateView
@@ -48,7 +49,8 @@ struct NewStepView: View {
     }
     
     private var stepNameView: some View {
-        VStack(alignment: .leading, spacing: 13) {
+        VStack(alignment: .leading,
+               spacing: Constants.contentViewSpacing) {
             Text(Strings.stepNameTitle)
                 .font(.inter(.semiBold, size: .lMedium))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -58,16 +60,14 @@ struct NewStepView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .background(Color.white)
-                .cornerRadius(10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                )
+                .cornerRadius(Constants.cornerRadius)
+                .cardContainerStyle()
         }
     }
     
     private var goalNameView: some View {
-        VStack(alignment: .leading, spacing: 13) {
+        VStack(alignment: .leading,
+               spacing: Constants.contentViewSpacing) {
             Text(Strings.stepNameTitle)
                 .font(.inter(.semiBold, size: .lMedium))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -77,16 +77,14 @@ struct NewStepView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .background(Color.white)
-                .cornerRadius(10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                )
+                .cornerRadius(Constants.cornerRadius)
+                .cardContainerStyle()
         }
     }
     
     private var dateView: some View {
-        VStack(alignment: .leading, spacing: 13) {
+        VStack(alignment: .leading,
+               spacing: Constants.contentViewSpacing) {
             Text(Strings.todoDateTitle)
                 .font(.inter(.semiBold, size: .lMedium))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -149,6 +147,9 @@ private enum Strings {
 // MARK: - Constants
 private enum Constants {
     static let topPadding: CGFloat = 25
+    static let contentSpacing: CGFloat = 25
+    static let contentViewSpacing: CGFloat = 13
+    static let cornerRadius: CGFloat = 12
     enum DatePicker {
         static let spacing: CGFloat = 12
     }

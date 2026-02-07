@@ -43,7 +43,7 @@ struct GradientProgressBar: View {
                     Capsule()
                         .fill(.gray.opacity(Constants.trackOpacity))
                     Capsule()
-                        .fill(GC.defaultGradient)
+                        .fill(GC.activeGradient)
                         .frame(width: completedNumberOfSteps > 0 ? max(Constants.minFillWidth, width * clamped) : 0) // keeps a nice rounded “pill” at low progress
                         .animation(.easeInOut(duration: Constants.animationDuration), value: clamped)
                 }

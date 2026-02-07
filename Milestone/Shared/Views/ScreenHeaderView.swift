@@ -58,7 +58,7 @@ struct ScreenHeaderView: View {
     }
     
     private var gradientView: some View {
-        GC.defaultGradient
+        GC.activeGradient
         .ignoresSafeArea(edges: .top)
     }
 }

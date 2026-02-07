@@ -21,7 +21,7 @@ struct GradientButton: View {
                 .foregroundStyle(.white)
                 .padding(Constants.padding)
                 .frame(maxWidth: .infinity)
-                .background(isActive ? GC.defaultGradient : GC.inactiveGradient)
+                .background(isActive ? GC.activeGradient : GC.inactiveGradient)
                 .roundedClip()
                 .defaultShadow()
         }

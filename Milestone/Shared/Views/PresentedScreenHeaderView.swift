@@ -32,7 +32,7 @@ struct PresentedScreenHeaderView: View {
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.vertical, Constants.bottomPadding)
         .padding(.horizontal, Constants.hPadding)
-        .background(GC.defaultGradient)
+        .background(GC.activeGradient)
     }
     
     private var titleView: some View {

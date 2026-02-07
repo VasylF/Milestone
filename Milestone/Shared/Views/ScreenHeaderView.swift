@@ -58,11 +58,7 @@ struct ScreenHeaderView: View {
     }
     
     private var gradientView: some View {
-        LinearGradient(
-            colors: [.blue, .purple],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+        GC.defaultGradient
         .ignoresSafeArea(edges: .top)
     }
 }

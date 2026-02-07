@@ -33,6 +33,7 @@ struct NewStepView: View {
                 goalNameView
                 dateView
                 Spacer()
+                createStepButton
             }
             .padding(.horizontal, GlobalConstants.hPadding)
             .padding(.top, Constants.topPadding)
@@ -43,17 +44,6 @@ struct NewStepView: View {
             if let stepModel = stepModel {
                 title = stepModel.title
             }
-        }
-    }
-    
-    private var stepNamednnn: some View {
-        ScrollView {
-            LazyVStack {
-                
-            }
-//            .padding(.top, Constants.topPadding)
-//            .padding(.horizontal, GlobalConstants.hPadding)
-//            .safeAreaPadding(.bottom, GlobalConstants.hPadding)
         }
     }
     
@@ -129,6 +119,12 @@ struct NewStepView: View {
         }
     }
     
+    private var createStepButton: some View {
+        GradientButton(title: Strings.createStep) {
+            
+        }
+    }
+    
     private var closeButton: some View {
         Button {
             dismiss()
@@ -147,6 +143,7 @@ private enum Strings {
     static let todoDateTitle: String = "To Do Date (Optional)"
     static let todoDate: String = "To Do Date"
     static let done: String = "Done"
+    static let createStep: String = "Create Step"
 }
 
 // MARK: - Constants

@@ -32,21 +32,13 @@ struct PresentedScreenHeaderView: View {
         .frame(maxWidth: .infinity, alignment: .center)
         .padding(.vertical, Constants.bottomPadding)
         .padding(.horizontal, Constants.hPadding)
-        .background(gradientView)
+        .background(GC.defaultGradient)
     }
     
     private var titleView: some View {
         Text(screenName)
             .font(.inter(.bold, size: .xxlLarge))
             .foregroundStyle(.white)
-    }
-    
-    private var gradientView: some View {
-        LinearGradient(
-            colors: [.blue, .purple],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
     }
 }
 

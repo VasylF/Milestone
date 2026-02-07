@@ -16,6 +16,7 @@ struct StepView: View {
 
     @State private var isShowingDatePicker = false
     @State private var selectedDate: Date = Date()
+    @State private var isShowingNewStep = false
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
@@ -28,6 +29,9 @@ struct StepView: View {
         .cardContainerStyle()
         .onAppear {
             selectedDate = step.date ?? Date()
+        }
+        .sheet(isPresented: $isShowingNewStep) {
+            NewStepView(stepModel: step)
         }
     }
     
@@ -100,7 +104,7 @@ struct StepView: View {
     private var moreButton: some View {
         Menu {
             Button(Strings.edit, action: {
-                // todo: show edit step screen
+                isShowingNewStep = true
             })
             Button(Strings.delete,
                    role: .destructive,

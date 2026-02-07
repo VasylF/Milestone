@@ -61,10 +61,19 @@ struct NewStepView: View {
         }
         .background(.softGray)
         .onAppear {
-            // Initialize editable title from model when editing
+            // Initialize editable fields from model when editing
             if let stepModel = stepModel {
                 title = stepModel.title
                 selectedDate = stepModel.date
+                // Preselect goal if step is linked to a goal
+                if let linkedGoalName = stepModel.goalName,
+                   let matchedGoal = goals.first(where: { $0.name == linkedGoalName }) {
+                    goalName = (matchedGoal.name, matchedGoal.id)
+                } else {
+                    goalName = (Strings.noGoal, nil)
+                }
+            } else {
+                goalName = (Strings.noGoal, nil)
             }
         }
     }
@@ -151,25 +160,17 @@ struct NewStepView: View {
                 .padding()
                 .presentationDetents([.medium])
             }
-            
         }
     }
     
     private var createStepButton: some View {
         GradientButton(isActive: .constant(!title.isEmpty),
-                       title: Strings.createStep) {
-            let stepModel = StepModel(
-                id: UUID(),
-                title: title,
-                isCompleted: false,
-                date: selectedDate)
-            // Link to GoalModel if a goal was selected
-            if let goalId = goalName.1, let selectedGoal = goals.first(where: { $0.id == goalId }) {
-                // Assuming StepModel has an optional relationship property `goal`
-                stepModel.goalName = selectedGoal.name
-                selectedGoal.steps.append(stepModel)
+                       title: isEditing ? Strings.updateStep : Strings.createStep) {
+            if isEditing {
+                updateExistingStep()
+            } else {
+                createNewStep()
             }
-            modelContext.insert(stepModel)
             dismiss()
         }
         .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -180,6 +181,70 @@ struct NewStepView: View {
             dismiss()
         } label: {
             Image(.close)
+        }
+    }
+    
+    private func createNewStep() {
+        let stepModel = StepModel(
+            id: UUID(),
+            title: title,
+            isCompleted: false,
+            date: selectedDate)
+        // Link to GoalModel if a goal was selected
+        if let goalId = goalName.1, let selectedGoal = goals.first(where: { $0.id == goalId }) {
+            // Assuming StepModel has an optional relationship property `goal`
+            stepModel.goalName = selectedGoal.name
+            selectedGoal.steps.append(stepModel)
+        }
+        modelContext.insert(stepModel)
+    }
+    
+    private func updateExistingStep() {
+        guard let step = stepModel else { return }
+
+        // Update basic fields
+        step.title = title
+        step.date = selectedDate
+
+        // Resolve currently linked goal (by name) and newly selected goal (by id)
+        let oldGoal = goals.first(where: { $0.name == step.goalName })
+        let newGoal: GoalModel? = {
+            if let newGoalId = goalName.1 {
+                return goals.first(where: { $0.id == newGoalId })
+            } else {
+                return nil
+            }
+        }()
+
+        // If the goal association has changed, update relationships
+        let goalChanged: Bool = {
+            switch (oldGoal?.id, newGoal?.id) {
+            case let (lhs?, rhs?):
+                return lhs != rhs
+            case (nil, nil):
+                return false
+            default:
+                return true
+            }
+        }()
+
+        if goalChanged {
+            // Remove from old goal if present
+            if let oldGoal {
+                if let index = oldGoal.steps.firstIndex(where: { $0.id == step.id }) {
+                    oldGoal.steps.remove(at: index)
+                }
+            }
+            // Link to new goal if selected, otherwise clear linkage
+            if let newGoal {
+                // Ensure not duplicated before appending
+                if !newGoal.steps.contains(where: { $0.id == step.id }) {
+                    newGoal.steps.append(step)
+                }
+                step.goalName = newGoal.name
+            } else {
+                step.goalName = nil
+            }
         }
     }
 }
@@ -196,6 +261,7 @@ private enum Strings {
     static let todoDate: String = "To Do Date"
     static let done: String = "Done"
     static let createStep: String = "Create Step"
+    static let updateStep: String = "Update Step"
 }
 
 // MARK: - Constants
@@ -220,4 +286,3 @@ private enum Constants {
 #Preview {
     NewStepView(stepModel: nil)
 }
-

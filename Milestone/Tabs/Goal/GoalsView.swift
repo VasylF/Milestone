@@ -11,8 +11,8 @@ import SwiftData
 
 struct GoalsView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var showingCreateGoal = false
     @Query private var goals: [GoalModel]
+    @State private var showingCreateGoal = false
     
     private var activeGoalCount: Int {
         goals.filter { !$0.isGoalCompleted }.count

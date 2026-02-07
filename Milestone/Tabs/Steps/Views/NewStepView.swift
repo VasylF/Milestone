@@ -6,24 +6,26 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct NewStepView: View {
-    @Environment(\.dismiss) private var dismiss
     var stepModel: StepModel? = nil
+    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Query private var goals: [GoalModel]
     @State private var title: String = ""
     @State private var isShowingDatePicker = false
     @State private var selectedDate: Date = Date()
-    @State private var goalName: String = Strings.noGoal
+    @State private var goalName: (String, UUID?) = (Strings.noGoal, nil)
     @State private var isShowingGoalMenu: Bool = false
-    private let predefinedGoals: [String] = [
-        "Health",
-        "Career",
-        "Personal Development",
-        "Finance",
-        "Relationships",
-        "Hobby",
-        Strings.noGoal
-    ]
+    private var predefinedGoals: [(String, UUID?)] {
+        var tmpGoals: [(String, UUID?)] = goals.map { model in
+            (model.name, Optional(model.id))
+        }
+        tmpGoals.append((Strings.noGoal, nil))
+        return tmpGoals
+    }
     
     private var isEditing: Bool {
         stepModel != nil
@@ -83,14 +85,14 @@ struct NewStepView: View {
                 .font(.inter(.semiBold, size: .lMedium))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Menu {
-                ForEach(predefinedGoals, id: \.self) { goal in
-                    Button(goal) {
+                ForEach(Array(predefinedGoals.enumerated()), id: \.offset) { _, goal in
+                    Button(goal.0) {
                         goalName = goal
                     }
                 }
             } label: {
                 HStack {
-                    Text(goalName)
+                    Text(goalName.0)
                         .font(Font.inter(.regular, size: .xlMedium))
                         .foregroundStyle(.darkBlue)
                     Spacer()
@@ -143,8 +145,21 @@ struct NewStepView: View {
     
     private var createStepButton: some View {
         GradientButton(title: Strings.createStep) {
-            
+            let stepModel = StepModel(
+                id: UUID(),
+                title: title,
+                isCompleted: false,
+                date: selectedDate)
+            // Link to GoalModel if a goal was selected
+            if let goalId = goalName.1, let selectedGoal = goals.first(where: { $0.id == goalId }) {
+                // Assuming StepModel has an optional relationship property `goal`
+                stepModel.goalName = selectedGoal.name
+                selectedGoal.steps.append(stepModel)
+            }
+            modelContext.insert(stepModel)
+            dismiss()
         }
+        .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
     }
     
     private var closeButton: some View {

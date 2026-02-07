@@ -1,83 +1,36 @@
 import SwiftUI
 import SwiftData
 
-private enum Constants {
-    static let navigationTitle = "New Goal"
-    static let sectionTitleTitle = "Title"
-    static let sectionTitleSteps = "Steps"
-    static let placeholderGoalTitle = "Goal title"
-    static let emptyStepsText = "No steps yet"
-    static let addStepLabel = "Add Step"
-    static let addStepSystemImage = "plus.circle"
-    static let deleteStepAccessibilityPrefix = "Delete Step "
-    static let cancel = "Cancel"
-    static let save = "Save"
-    static let step = "Step"
-    static let toDoDate = "To Do Date"
-    
-    enum Image {
-        static let trash = "trash"
-    }
-}
-
 struct CreateGoalView: View {
+    let goalModel: GoalModel? = nil
+    
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var title: String = ""
     @State private var steps: [StepModel] = []
+    
+    private var isEditing: Bool {
+        goalModel != nil
+    }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section(Constants.sectionTitleTitle) {
-                    TextField(Constants.placeholderGoalTitle, text: $title)
-                }
-                Section(Constants.sectionTitleSteps) {
-                    if steps.isEmpty {
-                        Text(Constants.emptyStepsText).foregroundStyle(.secondary)
-                    } else {
-                        ForEach(steps.indices, id: \.self) { index in
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack {
-                                    TextField("\(Constants.step) \(index + 1)", text: Binding(
-                                        get: { steps[index].title },
-                                        set: { steps[index].title = $0 }
-                                    ))
-                                    Button(role: .destructive) {
-                                        steps.remove(at: index)
-                                    } label: {
-                                        Image(systemName: Constants.Image.trash)
-                                    }
-                                    .buttonStyle(.borderless)
-                                    .accessibilityLabel(Constants.deleteStepAccessibilityPrefix + String(index + 1))
-                                }
-                            }
-                            .padding(.vertical, 4)
-                        }
-                    }
-                    Button {
-                        steps.append(StepModel(id: UUID(), title: "", isCompleted: false, date: Date()))
-                    } label: {
-                        Label(Constants.addStepLabel, systemImage: Constants.addStepSystemImage)
-                    }
-                }
+        VStack(spacing: .zero) {
+            PresentedScreenHeaderView(
+                screenName: isEditing ? Strings.editGoal : Strings.newGoal,
+                rightView: AnyView(closeButton)
+            )
+            VStack(alignment: .leading,
+                   spacing: Constants.contentSpacing) {
+                Spacer()
             }
-            .navigationTitle(Constants.navigationTitle)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Constants.cancel) { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Constants.save) {
-                        saveGoal()
-                        dismiss()
-                    }
-                    .disabled(
-                        title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-                        steps.first(where: { !$0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) == nil
-                    )
-                }
-            }
+        }
+    }
+    
+    private var closeButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Image(.close)
         }
     }
     
@@ -87,6 +40,18 @@ struct CreateGoalView: View {
     }
 }
 
+// MARK: - Strings
+private enum Strings {
+    static let editGoal: String = "Edit Goal"
+    static let newGoal: String = "New Goal"
+}
+
+// MARK: - Constants
+private enum Constants {
+    static let contentSpacing: CGFloat = 20
+}
+
+// MARK: - Preview
 #Preview {
     CreateGoalView()
 }

@@ -13,6 +13,17 @@ struct NewStepView: View {
     @State private var title: String = ""
     @State private var isShowingDatePicker = false
     @State private var selectedDate: Date = Date()
+    @State private var goalName: String = Strings.noGoal
+    @State private var isShowingGoalMenu: Bool = false
+    private let predefinedGoals: [String] = [
+        "Health",
+        "Career",
+        "Personal Development",
+        "Finance",
+        "Relationships",
+        "Hobby",
+        Strings.noGoal
+    ]
     
     private var isEditing: Bool {
         stepModel != nil
@@ -57,8 +68,8 @@ struct NewStepView: View {
             TextField(Strings.stepNamePlaceholder, text: $title)
                 .textInputAutocapitalization(.sentences)
                 .disableAutocorrection(false)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
+                .padding(.horizontal, Constants.TextField.horizontalPadding)
+                .padding(.vertical, Constants.TextField.verticalPadding)
                 .background(Color.white)
                 .cornerRadius(Constants.cornerRadius)
                 .cardContainerStyle()
@@ -68,17 +79,30 @@ struct NewStepView: View {
     private var goalNameView: some View {
         VStack(alignment: .leading,
                spacing: Constants.contentViewSpacing) {
-            Text(Strings.stepNameTitle)
+            Text(Strings.goalTitle)
                 .font(.inter(.semiBold, size: .lMedium))
                 .frame(maxWidth: .infinity, alignment: .leading)
-            TextField(Strings.stepNamePlaceholder, text: $title)
-                .textInputAutocapitalization(.sentences)
-                .disableAutocorrection(false)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .background(Color.white)
-                .cornerRadius(Constants.cornerRadius)
-                .cardContainerStyle()
+            Menu {
+                ForEach(predefinedGoals, id: \.self) { goal in
+                    Button(goal) {
+                        goalName = goal
+                    }
+                }
+            } label: {
+                HStack {
+                    Text(goalName)
+                        .font(Font.inter(.regular, size: .xlMedium))
+                        .foregroundStyle(.darkBlue)
+                    Spacer()
+                    Image(.upDownArrow)
+                }
+                .contentShape(Rectangle())
+            }
+            .menuStyle(.button)
+            .padding(.horizontal, Constants.Menu.horizontalPadding)
+            .background(Color.white)
+            .cornerRadius(Constants.cornerRadius)
+            .cardContainerStyle()
         }
     }
     
@@ -139,6 +163,8 @@ private enum Strings {
     static let stepNameTitle: String = "Step Name"
     static let stepNamePlaceholder: String = "Enter step name"
     static let todoDateTitle: String = "To Do Date (Optional)"
+    static let goalTitle: String = "Link to a Goal (Optional)"
+    static let noGoal: String = "No Goal"
     static let todoDate: String = "To Do Date"
     static let done: String = "Done"
     static let createStep: String = "Create Step"
@@ -150,6 +176,13 @@ private enum Constants {
     static let contentSpacing: CGFloat = 25
     static let contentViewSpacing: CGFloat = 13
     static let cornerRadius: CGFloat = 12
+    enum TextField {
+        static let horizontalPadding: CGFloat = 12
+        static let verticalPadding: CGFloat = 10
+    }
+    enum Menu {
+        static let horizontalPadding: CGFloat = 12
+    }
     enum DatePicker {
         static let spacing: CGFloat = 12
     }

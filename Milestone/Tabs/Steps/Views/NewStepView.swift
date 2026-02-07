@@ -16,7 +16,7 @@ struct NewStepView: View {
     @Query private var goals: [GoalModel]
     @State private var title: String = ""
     @State private var isShowingDatePicker = false
-    @State private var selectedDate: Date = Date()
+    @State private var selectedDate: Date? = nil
     @State private var goalName: (String, UUID?) = (Strings.noGoal, nil)
     @State private var isShowingGoalMenu: Bool = false
     private var predefinedGoals: [(String, UUID?)] {
@@ -32,7 +32,13 @@ struct NewStepView: View {
     }
     
     private var dateState: DateViewState {
-        stepModel?.convertToState() ?? stepModel?.convertToState(selectedDate) ?? .noDate
+        if let selectedDate {
+            return convertToDateViewState(selectedDate)
+        } else if let stepDate = stepModel?.date {
+            return convertToDateViewState(stepDate)
+        } else {
+            return .noDate
+        }
     }
     
     var body: some View {
@@ -57,6 +63,7 @@ struct NewStepView: View {
             // Initialize editable title from model when editing
             if let stepModel = stepModel {
                 title = stepModel.title
+                selectedDate = stepModel.date
             }
         }
     }
@@ -115,15 +122,19 @@ struct NewStepView: View {
                 .font(.inter(.semiBold, size: .lMedium))
                 .frame(maxWidth: .infinity, alignment: .leading)
             DateView(state: dateState, isCompleted: false) {
-                selectedDate = stepModel?.date ?? Date()
+                selectedDate = stepModel?.date ?? selectedDate ?? Date()
                 isShowingDatePicker = true
             }
             .popover(isPresented: $isShowingDatePicker, arrowEdge: .top) {
                 VStack(alignment: .leading,
                        spacing: Constants.DatePicker.spacing) {
+                    let bindingDate = Binding<Date>(
+                        get: { selectedDate ?? Date() },
+                        set: { selectedDate = $0 }
+                    )
                     DatePicker(
                         Strings.todoDate,
-                        selection: $selectedDate,
+                        selection: bindingDate,
                         displayedComponents: [.date]
                     )
                     .datePickerStyle(.graphical)

@@ -66,7 +66,8 @@ struct StepView: View {
     }
     
     private var dateView: some View {
-        DateView(state: step.convertToState(), isCompleted: step.isCompleted) {
+        DateView(state: convertToDateViewState(step.date),
+                 isCompleted: step.isCompleted) {
             selectedDate = step.date ?? Date()
             isShowingDatePicker = true
         }

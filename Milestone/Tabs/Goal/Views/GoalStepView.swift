@@ -41,7 +41,7 @@ struct GoalStepView: View {
     }
     
     private var dateView: some View {
-        DateView(state: stepModel.convertToState(), isCompleted: stepModel.isCompleted) {
+        DateView(state: convertToDateViewState(stepModel.date), isCompleted: stepModel.isCompleted) {
             selectedDate = stepModel.date ?? Date()
             isShowingDatePicker = true
         }

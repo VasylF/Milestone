@@ -127,7 +127,7 @@ struct StepView: View {
 // MARK: - Strings
 private enum Strings {
     static let done = "Done"
-    static let dueDate = "Due Date"
+    static let dueDate = "To Do Date"
     static let noGoal = "No goal"
     static let edit = "Edit"
     static let delete = "Delete"

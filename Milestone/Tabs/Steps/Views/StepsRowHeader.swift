@@ -70,7 +70,7 @@ private enum Strings {
     static let overdue = "OVERDUE"
     static let today = "TODAY"
     static let upcoming = "UPCOMING"
-    static let noDueDate = "NO DUE DATE"
+    static let noDueDate = "NO DO DATE"
 }
 
 // MARK: - Constants

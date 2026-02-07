@@ -17,6 +17,8 @@ struct StepsView: View {
     )
     private var stepModels: [StepModel]
     
+    @State private var showingNewStep: Bool = false
+    
     private var grouped: [(label: StepsRowHeader.HeaderType,
                            items: [StepModel])] {
         let calendar = Calendar.current
@@ -73,6 +75,9 @@ struct StepsView: View {
                 stepsView
             }
         }
+        .sheet(isPresented: $showingNewStep) {
+            NewStepView()
+        }
     }
     
     private var stepsView: some View {
@@ -113,6 +118,7 @@ struct StepsView: View {
     
     private var addButton: some View {
         Button {
+            showingNewStep = true
         } label: {
             Image(.madd)
         }

@@ -6,6 +6,7 @@ struct SettingsView: View {
         let build = Bundle.build ?? ""
         return "\(version) (\(build))"
     }
+    
     var body: some View {
         VStack(spacing: 0) {
             ScreenHeaderView(

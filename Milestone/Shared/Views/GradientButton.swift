@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct GradientButton: View {
+    @Binding var isActive: Bool
     let title: String
     let action: () -> Void
     
@@ -20,7 +21,7 @@ struct GradientButton: View {
                 .foregroundStyle(.white)
                 .padding(Constants.padding)
                 .frame(maxWidth: .infinity)
-                .background(GC.defaultGradient)
+                .background(isActive ? GC.defaultGradient : GC.inactiveGradient)
                 .roundedClip()
                 .defaultShadow()
         }
@@ -34,6 +35,6 @@ private enum Constants {
 
 // MARK: - Preview
 #Preview {
-    GradientButton(title: "Done", action: { })
+    GradientButton(isActive: .constant(false), title: "Done", action: { })
         .padding()
 }

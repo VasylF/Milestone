@@ -57,6 +57,7 @@ struct NewStepView: View {
             }
             .padding(.horizontal, GlobalConstants.hPadding)
             .padding(.top, Constants.topPadding)
+            .safeAreaPadding(.bottom, Constants.topPadding)
         }
         .background(.softGray)
         .onAppear {
@@ -155,7 +156,8 @@ struct NewStepView: View {
     }
     
     private var createStepButton: some View {
-        GradientButton(title: Strings.createStep) {
+        GradientButton(isActive: .constant(!title.isEmpty),
+                       title: Strings.createStep) {
             let stepModel = StepModel(
                 id: UUID(),
                 title: title,

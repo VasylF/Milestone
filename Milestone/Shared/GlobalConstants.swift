@@ -20,4 +20,12 @@ enum GlobalConstants {
         startPoint: .leading,
         endPoint: .trailing
     )
+    static let inactiveGradient: LinearGradient = .init(
+        stops: [
+            .init(color: Color.mainGray, location: 0.0),
+            .init(color: Color.mainGray, location: 1.0)
+        ],
+        startPoint: .leading,
+        endPoint: .trailing
+    )
 }

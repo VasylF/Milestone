@@ -40,7 +40,7 @@ struct CreateGoalView: View {
                 Text(Strings.addStep)
                     .font(.inter(.medium, size: .medium))
             }
-            .foregroundStyle(.darkGray)
+            .foregroundStyle(.mdarkGray)
             .frame(maxWidth: .infinity)
             .padding(.vertical, Constants.StepButton.vPadding)
             .cardContainerStyle()

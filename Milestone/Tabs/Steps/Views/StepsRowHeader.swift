@@ -42,7 +42,7 @@ extension StepsRowHeader {
         var color: Color {
             switch self {
                 case .overdue:
-                    return .mRed
+                    return .mred
                 case .upcoming, .today:
                     return .mainPurple
                 case .noDueDate:

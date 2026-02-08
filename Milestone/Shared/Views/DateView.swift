@@ -55,7 +55,7 @@ struct DateView: View {
         
         switch state {
             case .overdue:
-                return .mRed
+                return .mred
             case .today, .date:
                 return .mainPurple
             case .noDate:

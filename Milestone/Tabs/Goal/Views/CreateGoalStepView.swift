@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct CreateGoalStepView: View {
-    @State private var stepName: String = ""
     @State private var showDatePicker: Bool = false
-    @State private var dueDate: Date? = nil
-    let possition: Int
+    @State var step: StepModel
+    let position: Int
     let deleteAction: (Int) -> Void
 
     var body: some View {
@@ -24,8 +23,7 @@ struct CreateGoalStepView: View {
         }
         .frame(alignment: .top)
         .padding()
-        .cardContainerStyle(backgroundColor: .softGray)
-        .padding()
+        .cardContainerStyle()
     }
     
     private var mainView: some View {
@@ -36,31 +34,40 @@ struct CreateGoalStepView: View {
     }
     
     private var orderText: some View {
-        Text("#\(possition)")
+        Text("#\(position)")
             .font(.inter(.semiBold, size: .lMedium))
             .foregroundStyle(.mainGray)
             .padding(.trailing, Constants.orderTextTrailingPadding)
     }
     
     private var textField: some View {
-        TextField(Strings.placeholder, text: $stepName)
+        TextField(Strings.placeholder, text: $step.title)
             .font(.inter(.regular, size: .lMedium))
-            .textFieldStyle(.plain)
             .padding(.horizontal, Constants.textFieldHorizontalPadding)
-            .padding(.vertical, Constants.textFieldVerticalPadding)
-            .cardContainerStyle()
+            .background(
+                RoundedRectangle(cornerRadius: Constants.TextField.cornerRadius, style: .continuous)
+                    .fill(.white)
+                    .frame(height: Constants.TextField.height)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Constants.TextField.cornerRadius,
+                                 style: .continuous)
+                .stroke(Color.lightSoftGray.opacity(Constants.TextField.opacity), lineWidth: Constants.TextField.lineWidth)
+                    .frame(height: Constants.TextField.height)
+            )
+            .frame(height: Constants.TextField.height)
     }
     
     private var deleteButton: some View {
         Button {
-            deleteAction(possition)
+            deleteAction(position)
         } label: {
-            Image(.remove)
+            Image(.mremove)
         }
     }
     
     private var dateView: some View {
-        DateView(state: convertToDateViewState(dueDate),
+        DateView(state: convertToDateViewState(step.date),
                  isCompleted: false) {
             showDatePicker = true
         }
@@ -77,14 +84,26 @@ private enum Strings {
 private enum Constants {
     static let spacing: CGFloat = 13
     static let textFieldHorizontalPadding: CGFloat = 12
-    static let textFieldVerticalPadding: CGFloat = 13
+    static let textFieldVerticalPadding: CGFloat = 11
     static let hStackSpacing: CGFloat = 16
     static let topPadding: CGFloat = 17
     static let mainVStackSpacing: CGFloat = 15
     static let orderTextTrailingPadding: CGFloat = 5
+    enum TextField {
+        static let cornerRadius: CGFloat = 10
+        static let height: CGFloat = 44
+        static let opacity: CGFloat = 0.3
+        static let lineWidth: CGFloat = 1
+    }
 }
 
 // MARK: - Preview
 #Preview {
-    CreateGoalStepView(possition: 1) { _ in }
+    CreateGoalStepView(step: .init(
+        id: UUID(),
+        title: "Test",
+        isCompleted: false,
+        date: nil
+    ),
+                       position: 1) { _ in }
 }

@@ -22,25 +22,42 @@ struct CreateGoalView: View {
                 screenName: isEditing ? Strings.editGoal : Strings.newGoal,
                 rightView: AnyView(closeButton)
             )
-            VStack(alignment: .leading,
-                   spacing: Constants.contentSpacing) {
-                goalNameTextField
-                stepsHeaderTitle
-                Spacer()
-                addStepButton
-                createGoalButton
-                    .padding(.bottom, Constants.bottomPadding)
-            }
-                   .padding(.horizontal, Constants.horizontalPadding)
-                   .padding(.top, Constants.topPadding)
+            goalsSectionView
+            Spacer()
+            createGoalButton
+                .padding(.bottom, Constants.bottomPadding)
+                .padding(.horizontal, Constants.horizontalPadding)
+                .padding(.top, Constants.topPadding)
         }
         .foregroundStyle(.softGray)
     }
     
+    private var goalsSectionView: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading,
+                       spacing: Constants.contentSpacing) {
+                goalNameTextField
+                    .padding(.top, Constants.topPadding)
+                stepsHeaderTitle
+                ForEach(Array(steps.enumerated()), id: \.element.id) { index, step in
+                    CreateGoalStepView(
+                        step: step,
+                        position: index + 1) { position in
+                        removeStep(at: position)
+                    }
+                }
+                addStepButton
+            }
+        }
+        .padding(.horizontal, Constants.horizontalPadding)
+    }
+    
     private var addStepButton: some View {
         Button {
+            let newStep = StepModel(id: UUID(), title: "", isCompleted: false, date: nil)
+            steps.append(newStep)
         } label: {
-            HStack(spacing: 8) {
+            HStack(spacing: Constants.StepButton.spacing) {
                 Image(.addStep)
                 Text(Strings.addStep)
                     .font(.inter(.medium, size: .medium))
@@ -48,9 +65,15 @@ struct CreateGoalView: View {
             .foregroundStyle(.mdarkGray)
             .frame(maxWidth: .infinity)
             .padding(.vertical, Constants.StepButton.vPadding)
-            .cardContainerStyle()
+            .overlay(
+                RoundedRectangle(cornerRadius: Constants.StepButton.cornerRadius, style: .continuous)
+                    .stroke(.mainGray, lineWidth: Constants.StepButton.lineWidth)
+            )
+            .background(
+                RoundedRectangle(cornerRadius: Constants.StepButton.cornerRadius, style: .continuous)
+                    .fill(.lightSoftGray.opacity(Constants.StepButton.opacity))
+            )
         }
-        .buttonStyle(.plain)
     }
     
     private var createGoalButton: some View {
@@ -92,6 +115,12 @@ struct CreateGoalView: View {
         let goal = GoalModel(id: UUID(), name: title, steps: steps)
         modelContext.insert(goal)
     }
+    
+    private func removeStep(at possition: Int) {
+        guard steps.count > 0 && possition - 1 >= 0 else { return }
+        
+        steps.remove(at: possition - 1)
+    }
 }
 
 // MARK: - Strings
@@ -117,6 +146,10 @@ private enum Constants {
     
     enum StepButton {
         static let vPadding: CGFloat = 11
+        static let spacing: CGFloat = 8
+        static let cornerRadius: CGFloat = 10
+        static let lineWidth: CGFloat = 1
+        static let opacity: Double = 0.3
     }
     
     enum CreateButton {

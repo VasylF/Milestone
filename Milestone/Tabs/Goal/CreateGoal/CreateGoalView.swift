@@ -34,6 +34,7 @@ struct CreateGoalView: View {
                    .padding(.horizontal, Constants.horizontalPadding)
                    .padding(.top, Constants.topPadding)
         }
+        .foregroundStyle(.softGray)
     }
     
     private var addStepButton: some View {

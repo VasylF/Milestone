@@ -5,6 +5,7 @@ struct CardContainerStyle: ViewModifier {
     var strokeCornerRadius: CGFloat = 10
     var strokeOpacity: Double = 0.06
     var shadowColor: Color = Color.black.opacity(0.1)
+    var backgroundColor: Color = Color(.systemBackground)
     var shadowRadius: CGFloat = 15
     var shadowX: CGFloat = 0
     var shadowY: CGFloat = 6
@@ -14,7 +15,7 @@ struct CardContainerStyle: ViewModifier {
         content
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(Color(.systemBackground))
+                    .fill(backgroundColor)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: strokeCornerRadius, style: .continuous)
@@ -30,6 +31,7 @@ extension View {
         strokeCornerRadius: CGFloat = 10,
         strokeOpacity: Double = 0.06,
         shadowColor: Color = Color(.sRGBLinear, white: 0, opacity: 0.08),
+        backgroundColor: Color = Color(.systemBackground),
         shadowRadius: CGFloat = 15,
         shadowX: CGFloat = 0,
         shadowY: CGFloat = 6,
@@ -40,6 +42,7 @@ extension View {
             strokeCornerRadius: strokeCornerRadius,
             strokeOpacity: strokeOpacity,
             shadowColor: shadowColor,
+            backgroundColor: backgroundColor,
             shadowRadius: shadowRadius,
             shadowX: shadowX,
             shadowY: shadowY,

@@ -48,8 +48,8 @@ struct CreateGoalView: View {
                 }
                 addStepButton
             }
+                       .padding(.horizontal, Constants.horizontalPadding)
         }
-        .padding(.horizontal, Constants.horizontalPadding)
     }
     
     private var addStepButton: some View {
@@ -65,13 +65,13 @@ struct CreateGoalView: View {
             .foregroundStyle(.mdarkGray)
             .frame(maxWidth: .infinity)
             .padding(.vertical, Constants.StepButton.vPadding)
-            .overlay(
-                RoundedRectangle(cornerRadius: Constants.StepButton.cornerRadius, style: .continuous)
-                    .stroke(.mainGray, lineWidth: Constants.StepButton.lineWidth)
-            )
             .background(
                 RoundedRectangle(cornerRadius: Constants.StepButton.cornerRadius, style: .continuous)
                     .fill(.lightSoftGray.opacity(Constants.StepButton.opacity))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Constants.StepButton.cornerRadius, style: .continuous)
+                    .strokeBorder(.mainGray, lineWidth: Constants.StepButton.lineWidth)
             )
         }
     }

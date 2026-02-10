@@ -28,12 +28,16 @@ struct CreateGoalView: View {
                 screenName: isEditing ? Strings.editGoal : Strings.newGoal,
                 rightView: AnyView(closeButton)
             )
-            goalsSectionView
-            Spacer()
-            createGoalButton
-                .padding(.bottom, Constants.bottomPadding)
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.top, Constants.topPadding)
+            ZStack(alignment: .bottom) {
+                goalsSectionView
+                    .safeAreaPadding(.bottom, Constants.GoalsSection.bottomPadding)
+
+                VStack(spacing: 0) {
+                    createGoalButton
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .safeAreaPadding(.bottom, Constants.bottomPadding)
+                }
+            }
         }
         .foregroundStyle(.softGray)
     }
@@ -83,7 +87,7 @@ struct CreateGoalView: View {
     }
     
     private var createGoalButton: some View {
-        GradientButton(isActive: .constant(!title.isEmpty), title: buttonTitle) {
+        GradientButton(isActive: .constant(!title.isEmpty && steps.count > 0), title: buttonTitle) {
             isEditing ? updateGoal() : saveGoal()
             dismiss()
         }
@@ -155,6 +159,9 @@ private enum Constants {
     static let horizontalPadding: CGFloat = 20
     static let bottomPadding: CGFloat = 24
     static let topPadding: CGFloat = 24
+    enum GoalsSection {
+        static let bottomPadding: CGFloat = 100 // bottomPadding + create button height + 25
+    }
     
     enum StepButton {
         static let vPadding: CGFloat = 11

@@ -78,7 +78,8 @@ struct CreateGoalView: View {
     
     private var createGoalButton: some View {
         GradientButton(isActive: .constant(!title.isEmpty), title: buttonTitle) {
-            
+            saveGoal()
+            dismiss()
         }
     }
     

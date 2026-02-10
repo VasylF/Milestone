@@ -47,7 +47,8 @@ struct GoalStepView: View {
         }
         .disabled(stepModel.isCompleted)
         .popover(isPresented: $isShowingDatePicker, arrowEdge: .top) {
-            VStack(alignment: .leading, spacing: Constants.DatePicker.spacing) {
+            VStack(alignment: .leading,
+                   spacing: Constants.DatePicker.spacing) {
                 DatePicker(
                     Strings.dueDate,
                     selection: $selectedDate,

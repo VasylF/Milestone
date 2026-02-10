@@ -54,7 +54,6 @@ struct GradientProgressBar: View {
     }
 }
 
-
 // MARK: - Constants
 private enum Constants {
     static let animationDuration: TimeInterval = 0.25
@@ -65,7 +64,6 @@ private enum Constants {
     static let spacing: CGFloat = 13
     static let viewHeight: CGFloat = 35
 }
-
 
 // MARK: - Preview
 #Preview {

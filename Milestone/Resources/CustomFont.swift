@@ -14,4 +14,3 @@ enum CustomFont {
         case bold = "Inter-Bold"
     }
 }
-

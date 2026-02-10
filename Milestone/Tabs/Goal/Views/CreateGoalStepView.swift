@@ -23,7 +23,40 @@ struct CreateGoalStepView: View {
         }
         .frame(alignment: .top)
         .padding()
-        .cardContainerStyle()
+        .background(
+            RoundedRectangle(cornerRadius: Constants.cornerRadius,
+                             style: .continuous)
+                .fill(.extrimlyLightGray)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: Constants.cornerRadius,
+                             style: .continuous)
+            .stroke(.softGray, lineWidth: Constants.lineWidth)
+        )
+        .popover(isPresented: $showDatePicker, arrowEdge: .top) {
+            VStack(alignment: .leading,
+                   spacing: Constants.DatePicker.spacing) {
+                DatePicker(
+                    Strings.dueDate,
+                    selection: Binding<Date>(
+                        get: { step.date ?? Date() },
+                        set: { newValue in step.date = newValue }
+                    ),
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.graphical)
+
+                HStack {
+                    Spacer()
+                    Button(Strings.done) {
+                        showDatePicker = false
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+            .padding()
+            .presentationDetents([.medium])
+        }
     }
     
     private var mainView: some View {
@@ -43,6 +76,7 @@ struct CreateGoalStepView: View {
     private var textField: some View {
         TextField(Strings.placeholder, text: $step.title)
             .font(.inter(.regular, size: .lMedium))
+            .foregroundStyle(.darkBlue)
             .padding(.horizontal, Constants.textFieldHorizontalPadding)
             .background(
                 RoundedRectangle(cornerRadius: Constants.TextField.cornerRadius, style: .continuous)
@@ -71,13 +105,14 @@ struct CreateGoalStepView: View {
                  isCompleted: false) {
             showDatePicker = true
         }
-                 .cardContainerStyle()
     }
 }
 
 // MARK: - Strings
 private enum Strings {
     static let placeholder: String = "Step title"
+    static let done = "Done"
+    static let dueDate = "To Do Date"
 }
 
 // MARK: - Constants
@@ -89,11 +124,16 @@ private enum Constants {
     static let topPadding: CGFloat = 17
     static let mainVStackSpacing: CGFloat = 15
     static let orderTextTrailingPadding: CGFloat = 5
+    static let cornerRadius: CGFloat = 12
+    static let lineWidth: CGFloat = 1
     enum TextField {
         static let cornerRadius: CGFloat = 10
         static let height: CGFloat = 44
         static let opacity: CGFloat = 0.3
-        static let lineWidth: CGFloat = 1
+        static let lineWidth: CGFloat = 2
+    }
+    enum DatePicker {
+        static let spacing: CGFloat = 12
     }
 }
 
@@ -107,3 +147,4 @@ private enum Constants {
     ),
                        position: 1) { _ in }
 }
+

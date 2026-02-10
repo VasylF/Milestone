@@ -22,10 +22,23 @@ struct TitledTextField: View {
 
             TextField(placeholder, text: $text)
                 .font(.inter(.regular, size: .lMedium))
+                .foregroundStyle(.darkBlue)
                 .textFieldStyle(.plain)
                 .padding(.horizontal, Constants.textFieldHorizontalPadding)
                 .padding(.vertical, Constants.textFieldVerticalPadding)
-                .cardContainerStyle()
+                .background(
+                    RoundedRectangle(cornerRadius: Constants.TextField.cornerRadius,
+                                     style: .continuous)
+                        .fill(.extrimlyLightGray)
+                        .frame(height: Constants.TextField.height)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: Constants.TextField.cornerRadius,
+                                     style: .continuous)
+                    .stroke(.softGray, lineWidth: Constants.TextField.lineWidth)
+                    .frame(height: Constants.TextField.height)
+                )
+                .frame(height: Constants.TextField.height)
         }
     }
 }
@@ -35,6 +48,12 @@ private enum Constants {
     static let spacing: CGFloat = 13
     static let textFieldHorizontalPadding: CGFloat = 14
     static let textFieldVerticalPadding: CGFloat = 18
+    enum TextField {
+        static let cornerRadius: CGFloat = 10
+        static let height: CGFloat = 44
+        static let opacity: CGFloat = 0.3
+        static let lineWidth: CGFloat = 2
+    }
 }
 
 // MARK: - Preview

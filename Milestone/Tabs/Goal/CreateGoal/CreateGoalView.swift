@@ -2,11 +2,11 @@ import SwiftUI
 import SwiftData
 
 struct CreateGoalView: View {
-    let goalModel: GoalModel? = nil
+    private let goalModel: GoalModel?
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @State private var title: String = ""
+    @State private var title: String =  ""
     @State private var steps: [StepModel] = []
     
     private var isEditing: Bool {
@@ -16,6 +16,12 @@ struct CreateGoalView: View {
         isEditing ? Strings.updateGoalButtonTitle : Strings.createGoalButtonTitle
     }
 
+    init(goal: GoalModel? = nil) {
+        goalModel = goal
+        _title = State(initialValue: goal?.name ?? "")
+        _steps = State(initialValue: goal?.steps ?? [])
+    }
+    
     var body: some View {
         VStack(spacing: .zero) {
             PresentedScreenHeaderView(
@@ -78,7 +84,7 @@ struct CreateGoalView: View {
     
     private var createGoalButton: some View {
         GradientButton(isActive: .constant(!title.isEmpty), title: buttonTitle) {
-            saveGoal()
+            isEditing ? updateGoal() : saveGoal()
             dismiss()
         }
     }
@@ -115,6 +121,11 @@ struct CreateGoalView: View {
     private func saveGoal() {
         let goal = GoalModel(id: UUID(), name: title, steps: steps)
         modelContext.insert(goal)
+    }
+    
+    private func updateGoal() {
+        goalModel?.name = title
+        goalModel?.steps = steps
     }
     
     private func removeStep(at possition: Int) {

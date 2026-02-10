@@ -12,6 +12,7 @@ import SwiftData
 struct GoalView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isGoalsListExtended: Bool = false
+    @State private var showingEditGoal = false
     
     let goalModel: GoalModel
     
@@ -32,6 +33,9 @@ struct GoalView: View {
         .padding(.horizontal, GlobalConstants.hPadding)
         .padding(.vertical, Constants.Container.topPadding)
         .cardContainerStyle()
+        .sheet(isPresented: $showingEditGoal) {
+            CreateGoalView(goal: goalModel)
+        }
     }
     
     private var stepsList: some View {
@@ -76,7 +80,9 @@ struct GoalView: View {
                 .foregroundStyle(.darkBlue)
             Spacer()
             Menu {
-                Button(Strings.edit, action: {})
+                Button(Strings.edit, action: {
+                    showingEditGoal = true
+                })
                 Button(Strings.remove,
                        role: .destructive,
                        action: {

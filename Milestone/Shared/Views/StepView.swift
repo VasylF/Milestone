@@ -37,6 +37,7 @@ struct StepView: View {
     
     private var statusButton: some View {
         Button {
+            triggerCompletionHaptics(curentState: step.isCompleted)
             step.isCompleted.toggle()
         } label: {
             Image(step.isCompleted ? .checkmarkDone : .checkmarkUndone)

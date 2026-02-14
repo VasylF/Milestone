@@ -42,7 +42,6 @@ struct GradientProgressBar: View {
                 ZStack(alignment: .leading) {
                     Capsule()
                         .fill(.gray.opacity(Constants.trackOpacity))
-
                     Rectangle()
                         .fill(GC.activeGradient)
                         .frame(width: completedNumberOfSteps > 0 ? max(Constants.minFillWidth, width * clamped) : 0)

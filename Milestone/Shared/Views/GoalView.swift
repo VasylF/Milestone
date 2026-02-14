@@ -77,7 +77,8 @@ struct GoalView: View {
             chevronButton
             Text(goalModel.name)
                 .font(.inter(.bold, size: .xlMedium))
-                .foregroundStyle(.darkBlue)
+                .foregroundStyle(goalModel.isGoalCompleted ? .mediumGray : .darkBlue)
+                .strikethrough(goalModel.isGoalCompleted)
             Spacer()
             Menu {
                 Button(Strings.edit, action: {

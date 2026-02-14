@@ -91,6 +91,7 @@ struct NewStepView: View {
                spacing: Constants.contentViewSpacing) {
             Text(Strings.goalTitle)
                 .font(.inter(.semiBold, size: .lMedium))
+                .foregroundStyle(.grafit)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Menu {
                 ForEach(Array(predefinedGoals.enumerated()), id: \.offset) { _, goal in
@@ -101,7 +102,7 @@ struct NewStepView: View {
             } label: {
                 HStack {
                     Text(goalName.0)
-                        .font(Font.inter(.regular, size: .xlMedium))
+                        .font(.inter(.regular, size: .lMedium))
                         .foregroundStyle(.darkBlue)
                     Spacer()
                     Image(.upDownArrow)

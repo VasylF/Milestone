@@ -79,20 +79,11 @@ struct NewStepView: View {
     }
     
     private var stepNameView: some View {
-        VStack(alignment: .leading,
-               spacing: Constants.contentViewSpacing) {
-            Text(Strings.stepNameTitle)
-                .font(.inter(.semiBold, size: .lMedium))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            TextField(Strings.stepNamePlaceholder, text: $title)
-                .textInputAutocapitalization(.sentences)
-                .disableAutocorrection(false)
-                .padding(.horizontal, Constants.TextField.horizontalPadding)
-                .padding(.vertical, Constants.TextField.verticalPadding)
-                .background(Color.white)
-                .cornerRadius(Constants.cornerRadius)
-                .cardContainerStyle()
-        }
+        TitledTextField(
+            title: Strings.stepNameTitle,
+            placeholder: Strings.stepNamePlaceholder,
+            text: $title
+        )
     }
     
     private var goalNameView: some View {

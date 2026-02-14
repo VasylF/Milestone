@@ -29,13 +29,13 @@ struct TitledTextField: View {
                 .background(
                     RoundedRectangle(cornerRadius: Constants.TextField.cornerRadius,
                                      style: .continuous)
-                        .fill(.extrimlyLightGray)
+                        .fill(.white)
                         .frame(height: Constants.TextField.height)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: Constants.TextField.cornerRadius,
                                      style: .continuous)
-                    .stroke(.softGray, lineWidth: Constants.TextField.lineWidth)
+                    .stroke(.mainGray, lineWidth: Constants.TextField.lineWidth)
                     .frame(height: Constants.TextField.height)
                 )
                 .frame(height: Constants.TextField.height)
@@ -52,7 +52,7 @@ private enum Constants {
         static let cornerRadius: CGFloat = 10
         static let height: CGFloat = 44
         static let opacity: CGFloat = 0.3
-        static let lineWidth: CGFloat = 2
+        static let lineWidth: CGFloat = 1
     }
 }
 

@@ -25,6 +25,7 @@ struct GradientButton: View {
                 .roundedClip()
                 .defaultShadow()
         }
+        .disabled(!isActive)
     }
 }
 
@@ -38,3 +39,4 @@ private enum Constants {
     GradientButton(isActive: .constant(false), title: "Done", action: { })
         .padding()
 }
+

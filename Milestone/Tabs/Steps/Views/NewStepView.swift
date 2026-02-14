@@ -19,6 +19,7 @@ struct NewStepView: View {
     @State private var selectedDate: Date? = nil
     @State private var goalName: (String, UUID?) = (Strings.noGoal, nil)
     @State private var isShowingGoalMenu: Bool = false
+    @State private var isKeyboardVisible: Bool = false
     private var predefinedGoals: [(String, UUID?)] {
         var tmpGoals: [(String, UUID?)] = goals.map { model in
             (model.name, Optional(model.id))
@@ -53,7 +54,10 @@ struct NewStepView: View {
                 goalNameView
                 dateView
                 Spacer()
-                createStepButton
+                if !isKeyboardVisible {
+                    createStepButton
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
             }
             .padding(.horizontal, GlobalConstants.hPadding)
             .padding(.top, Constants.topPadding)
@@ -75,6 +79,12 @@ struct NewStepView: View {
             } else {
                 goalName = (Strings.noGoal, nil)
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            withAnimation(.easeInOut(duration: 0.2)) { isKeyboardVisible = true }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            withAnimation(.easeInOut(duration: 0.2)) { isKeyboardVisible = false }
         }
     }
     
@@ -278,3 +288,4 @@ private enum Constants {
 #Preview {
     NewStepView(stepModel: nil)
 }
+

@@ -8,6 +8,7 @@ struct CreateGoalView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var title: String =  ""
     @State private var steps: [StepModel] = []
+    @FocusState private var focusedStepID: UUID?
     
     private var isEditing: Bool {
         goalModel != nil
@@ -52,13 +53,16 @@ struct CreateGoalView: View {
                 ForEach(Array(steps.enumerated()), id: \.element.id) { index, step in
                     CreateGoalStepView(
                         step: step,
-                        position: index + 1) { position in
+                        position: index + 1
+                    ) { position in
                         removeStep(at: position)
                     }
+                    .id(step.id)
+                    .focused($focusedStepID, equals: step.id)
                 }
                 addStepButton
             }
-                       .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.horizontal, Constants.horizontalPadding)
         }
         .background(.softGray)
     }
@@ -67,6 +71,9 @@ struct CreateGoalView: View {
         Button {
             let newStep = StepModel(id: UUID(), title: "", isCompleted: false, date: nil)
             steps.append(newStep)
+            DispatchQueue.main.async {
+                focusedStepID = newStep.id
+            }
         } label: {
             HStack(spacing: Constants.StepButton.spacing) {
                 Image(.addStep)

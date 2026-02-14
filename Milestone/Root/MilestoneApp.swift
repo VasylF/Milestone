@@ -14,6 +14,7 @@ struct MilestoneApp: App {
     var body: some Scene {
         WindowGroup {
             RootTabView()
+                .preferredColorScheme(.light)
         }
         .modelContainer(for: GoalModel.self)
     }

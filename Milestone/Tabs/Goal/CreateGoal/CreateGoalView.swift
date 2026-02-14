@@ -8,7 +8,9 @@ struct CreateGoalView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var title: String =  ""
     @State private var steps: [StepModel] = []
+    @State private var shouldScrollToAddStep = false
     @FocusState private var focusedStepID: UUID?
+    @FocusState private var isGoalNameFocused: Bool
     
     private var isEditing: Bool {
         goalModel != nil
@@ -32,8 +34,7 @@ struct CreateGoalView: View {
             ZStack(alignment: .bottom) {
                 goalsSectionView
                     .safeAreaPadding(.bottom, Constants.GoalsSection.bottomPadding)
-
-                VStack(spacing: 0) {
+                if focusedStepID == nil && !isGoalNameFocused {
                     createGoalButton
                         .padding(.horizontal, Constants.horizontalPadding)
                         .safeAreaPadding(.bottom, Constants.bottomPadding)
@@ -44,33 +45,45 @@ struct CreateGoalView: View {
     }
     
     private var goalsSectionView: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading,
-                       spacing: Constants.contentSpacing) {
-                goalNameTextField
-                    .padding(.top, Constants.topPadding)
-                stepsHeaderTitle
-                ForEach(Array(steps.enumerated()), id: \.element.id) { index, step in
-                    CreateGoalStepView(
-                        step: step,
-                        position: index + 1
-                    ) { position in
-                        removeStep(at: position)
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .leading,
+                           spacing: Constants.contentSpacing) {
+                    goalNameTextField
+                        .focused($isGoalNameFocused)
+                        .padding(.top, Constants.topPadding)
+                    stepsHeaderTitle
+                    ForEach(Array(steps.enumerated()), id: \.element.id) { index, step in
+                        CreateGoalStepView(
+                            step: step,
+                            position: index + 1
+                        ) { position in
+                            removeStep(at: position)
+                        }
+                        .id(step.id)
+                        .focused($focusedStepID, equals: step.id)
                     }
-                    .id(step.id)
-                    .focused($focusedStepID, equals: step.id)
+                    addStepButton
+                        .id(Ids.addStepButton)
                 }
-                addStepButton
+                .padding(.horizontal, Constants.horizontalPadding)
             }
-            .padding(.horizontal, Constants.horizontalPadding)
+            .background(.softGray)
+            .onChange(of: shouldScrollToAddStep) { _, newValue in
+                guard newValue else { return }
+                withAnimation {
+                    proxy.scrollTo(Ids.addStepButton, anchor: .bottom)
+                }
+                shouldScrollToAddStep = false
+            }
         }
-        .background(.softGray)
     }
     
     private var addStepButton: some View {
         Button {
             let newStep = StepModel(id: UUID(), title: "", isCompleted: false, date: nil)
             steps.append(newStep)
+            shouldScrollToAddStep = true
             DispatchQueue.main.async {
                 focusedStepID = newStep.id
             }
@@ -186,6 +199,11 @@ private enum Constants {
         static let shadowRadius: CGFloat = 12
         static let shadowY: CGFloat = 6
     }
+}
+
+// MARK: - Ids
+private enum Ids {
+    static let addStepButton: String = "addStepButton"
 }
 
 // MARK: - Preview

@@ -40,9 +40,11 @@ struct GoalsView: View {
     private var emptyView: some View {
         VStack(spacing: Constants.spacing) {
             Image(systemName: Constants.Image.target)
+                .foregroundStyle(.mainGray)
                 .font(Constants.font)
             Text(Strings.emptyStateText)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.mainGray)
+                .font(.inter(.regular, size: .xlMedium))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemBackground))

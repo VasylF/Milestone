@@ -108,6 +108,7 @@ struct StepsView: View {
         VStack(spacing: Constants.EmptyView.spacing) {
             Image(systemName: "figure.walk")
                 .font(.system(size: Constants.EmptyView.size))
+                .foregroundStyle(.mainGray)
             Text(Strings.emptyText)
                 .font(.inter(.regular, size: .xlMedium))
                 .foregroundStyle(.mainGray)
@@ -154,7 +155,7 @@ private enum Constants {
         static let leadingPadding: CGFloat = 8
     }
     enum EmptyView {
-        static let spacing: CGFloat = 12
+        static let spacing: CGFloat = 15
         static let size: CGFloat = 48
     }
 }

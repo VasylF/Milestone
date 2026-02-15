@@ -195,7 +195,7 @@ struct NewStepView: View {
         // Link to GoalModel if a goal was selected
         if let goalId = goalName.1, let selectedGoal = goals.first(where: { $0.id == goalId }) {
             // Assuming StepModel has an optional relationship property `goal`
-            stepModel.goalName = selectedGoal.name
+            stepModel.goal = selectedGoal
             selectedGoal.steps.append(stepModel)
         }
         modelContext.insert(stepModel)
@@ -243,9 +243,9 @@ struct NewStepView: View {
                 if !newGoal.steps.contains(where: { $0.id == step.id }) {
                     newGoal.steps.append(step)
                 }
-                step.goalName = newGoal.name
+                step.goal = newGoal
             } else {
-                step.goalName = nil
+                step.goal = nil
             }
         }
     }

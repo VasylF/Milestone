@@ -15,16 +15,20 @@ final class StepModel {
     var isCompleted: Bool
     var date: Date?
     var createdAt: Date = Date()
-    var goalName: String?
-    var hasGoal: Bool {
-        goalName != nil
-    }
+    @Relationship(inverse: \GoalModel.steps)
+    var goal: GoalModel?
     
-    init(id: UUID, title: String, isCompleted: Bool, date: Date?, goalName: String? = nil) {
+    init(id: UUID, title: String, isCompleted: Bool, date: Date?, goal: GoalModel? = nil) {
         self.id = id
         self.title = title
         self.isCompleted = isCompleted
         self.date = date
-        self.goalName = goalName
+        self.goal = goal
     }
+}
+
+// MARK: - Extension
+extension StepModel {
+    var goalName: String? { goal?.name }
+    var hasGoal: Bool { goal != nil }
 }

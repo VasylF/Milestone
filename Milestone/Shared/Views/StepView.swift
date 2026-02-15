@@ -110,12 +110,28 @@ struct StepView: View {
             Button(Strings.delete,
                    role: .destructive,
                    action: {
-                modelContext.delete(step)
+                delete(step: step)
             })
         } label: {
             Image(.more)
         }
         .frame(size: C.More.size)
+    }
+    
+    func delete(step: StepModel) {
+        // Capture the goal before deleting the step
+        let parentGoal = step.goal
+
+        // Detach relationship first so the goal's steps are updated immediately
+        step.goal = nil
+
+        // Delete the step
+        modelContext.delete(step)
+
+        // If the parent goal now has no steps, delete the goal as well
+        if let goal = parentGoal, goal.steps.isEmpty {
+            modelContext.delete(goal)
+        }
     }
 }
 
@@ -163,7 +179,7 @@ private enum Constants {
 #Preview {
     ScrollView {
         VStack(alignment: .leading, spacing: 20) {
-            StepView(step: .init(id: UUID(), title: "User testing", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!, goalName: "T4 Grade"))
+            StepView(step: .init(id: UUID(), title: "User testing", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 1, to: Date())!))
             StepView(step: .init(id: UUID(), title: "Design review", isCompleted: true, date: Date()))
             StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: 3, to: Date())!))
             StepView(step: .init(id: UUID(), title: "Prepare launch notes", isCompleted: false, date: Calendar.current.date(byAdding: .day, value: -3, to: Date())!))

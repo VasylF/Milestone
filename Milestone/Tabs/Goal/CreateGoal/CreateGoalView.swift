@@ -144,7 +144,12 @@ struct CreateGoalView: View {
     }
     
     private func saveGoal() {
-        let goal = GoalModel(id: UUID(), name: title, steps: steps)
+        // Prepare steps with the goal name populated
+        let updatedSteps = steps.map { step -> StepModel in
+            step.goalName = title
+            return step
+        }
+        let goal = GoalModel(id: UUID(), name: title, steps: updatedSteps)
         modelContext.insert(goal)
     }
     
